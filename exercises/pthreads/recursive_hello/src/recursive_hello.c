@@ -38,7 +38,7 @@ void* greet (void* data){
             --size_t;
             int error = pthread_create(&thread[size_t],/*thread atributes*/ NULL, greet, /*function arguments*/ size_t);
             if (error == EXIT_SUCCESS){
-                printf("Saludo desde: %i \n", size_t+1);
+                printf("Saludo desde: %i \n", size_t);
                 //pthread_join(thread[size_t], NULL);
             }else {
                 fprintf(stderr, "Error: could not create secondary thread");
