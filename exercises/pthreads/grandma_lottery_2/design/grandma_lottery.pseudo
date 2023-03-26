@@ -1,0 +1,12 @@
+procedure grandma:
+    print("Go buy some lottery")
+    for amountOfGrandchildren
+        create_thread(grandchildren)
+    end for
+    print("What are the numbers?")
+end procedure
+
+procedure grandchildren:
+    print("The number is %i")
+end procedure
+    
