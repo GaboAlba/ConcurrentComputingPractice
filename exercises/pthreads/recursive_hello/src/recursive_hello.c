@@ -9,7 +9,7 @@ void* greet(void* data);
 int main(void){
     //create_thread(greet)
     pthread_t thread;
-    int size_t = 8;
+    int size_t = 2;
     int error = pthread_create(&thread,/*thread atributes*/ NULL, greet, /*function arguments*/ size_t);
     if(error == EXIT_SUCCESS){
         //print("Hello from main thread")
@@ -29,20 +29,13 @@ void* greet (void* data){
     if (size_t == 0) {
         printf("Hasta luego desde: %i \n", size_t);
     }else {
-        //printf("Saludo desde: %i \n", size_t);
-        if (size_t == 1){
-            size_t--;
-            int error = pthread_create(&thread[size_t],/*thread atributes*/ NULL, greet, /*function arguments*/ size_t);
+        --size_t;
+        int error = pthread_create(&thread[size_t],/*thread atributes*/ NULL, greet, /*function arguments*/ size_t);
+        if (error == EXIT_SUCCESS){
+            printf("Saludo desde: %i \n", size_t);
             //pthread_join(thread[size_t], NULL);
-        }else{
-            --size_t;
-            int error = pthread_create(&thread[size_t],/*thread atributes*/ NULL, greet, /*function arguments*/ size_t);
-            if (error == EXIT_SUCCESS){
-                printf("Saludo desde: %i \n", size_t);
-                //pthread_join(thread[size_t], NULL);
-            }else {
-                fprintf(stderr, "Error: could not create secondary thread");
-            }
+        }else {
+            fprintf(stderr, "Error: could not create secondary thread");
         }
         
     }
