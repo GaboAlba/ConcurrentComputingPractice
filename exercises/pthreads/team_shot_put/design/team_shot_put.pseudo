@@ -1,0 +1,20 @@
+procedure Referee() {
+    init NumAthletes
+    init Team1
+    init Team2
+    loop (athlete < NumAthletes) {
+        create Thread(throw(Team1.athlete))
+        create Thread(throw(Team2.athlete))
+    }
+    loop (athlete < Num) {
+        Thread.join()
+    }
+}
+
+procedure throws() {
+    for shot < 3 {
+        Results.append(randint(0,25))
+    }
+
+    return max.Results
+}

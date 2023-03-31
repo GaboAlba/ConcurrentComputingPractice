@@ -26,10 +26,10 @@ int main(void) {
                         /*function arguments*/ 2);
     if (grandchildren1 == EXIT_SUCCESS && grandchildren2 == EXIT_SUCCESS) {
         printf("What numbers did you get?\n");
-        long int* retval1;
-        long int* retval2;
-        pthread_join(thread, retval1);
-        pthread_join(thread2, retval2);
+        long long int* retval1;
+        long long int* retval2;
+        pthread_join(thread, &retval1);
+        pthread_join(thread2, &retval2);
 
         printf("MemAdress1: %p value: %li\n", &retval1, retval1);
         printf("MemAdress2: %p value: %li\n", &retval2, retval2);
@@ -43,9 +43,9 @@ int main(void) {
 // end procedure
 
 void* grandchildren(void* data) {
-    long int number = (long int*)data;
+    long long int number = (long long int*)data;
     // Utilizing rand() as it doesn't need a seed and rand_r has been deprecated
-    long int randint = (long int)rand() % 100;
+    long long int randint = (long long int)rand() % 100;
     printf("I got the number: %li (%li)\n", randint, number);
-    return (long int*) &randint;
+    return (void*) randint;
 }
