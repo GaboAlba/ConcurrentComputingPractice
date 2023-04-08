@@ -1,3 +1,28 @@
+struct publicInfo {
+    remainingHits:int
+}
+
 procedure main {
+    pinataResistance:int
+    invitedThreads:int
+    while pinata {
+        for invitedThreads {
+            create_thread(hitPinata(thread, publicInfo.remainingHits))
+        }
+    }
+}
+
+procedure hitPinata(publicInfo.remainingHits){
+    semaphore.wait()
+    numOfHits = rand()
+    remainingHits = remainingHits - numOfHits
+    if remainingHits > 0 {
+        print("Thread x/y: %i hits", numOfHits)
+    } else {
+        print("Thread x/y broke the pinata")
+        return 0
+    }
+    semaphore.post()
+    return remainingHits
     
 }
