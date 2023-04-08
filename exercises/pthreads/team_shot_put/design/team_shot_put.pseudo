@@ -3,8 +3,7 @@ procedure Referee() {
     init Team1
     init Team2
     loop (athlete < NumAthletes) {
-        create Thread(throw(Team1.athlete))
-        create Thread(throw(Team2.athlete))
+        create Thread(throw(athlete))
     }
     loop (athlete < Num) {
         Thread.join()
