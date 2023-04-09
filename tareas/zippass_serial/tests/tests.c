@@ -32,6 +32,38 @@ int openWithNoPassword_Test() {
     return 0;
 }
 
+int generateAllPossiblePwds_tests() {
+    char* alphabet = "abc";
+    uint64_t maxLength = 3;
+    char** combinations;
+    combinations[0] = "a";
+    combinations[1] = "b";
+    combinations[2] = "c";
+    combinations[3] = "aa";
+    combinations[4] = "ba";
+    combinations[5] = "ca";
+    combinations[6] = "ab";
+    combinations[7] = "bb";
+    combinations[8] = "cb";
+    combinations[9] = "cc";
+    combinations[10] = "aaa";
+    combinations[11] = "baa";
+    combinations[12] = "caa";
+    combinations[13] = "aba";
+    combinations[14] = "bba";
+    combinations[15] = "cba";
+    combinations[16] = "aca";
+    combinations[17] = "bca";
+    combinations[18] = "cca";
+    combinations[19] = "aab";
+    combinations[20] = "bab";
+    combinations[21] = "cab";
+    combinations[22] = "abc";
+    combinations[23] = "bbc";
+    combinations[24] = "cbc";
+    combinations[25] = "ccc";
+}
+
 int openWithPassword_Test() {
     return 0;
 }
