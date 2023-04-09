@@ -41,7 +41,7 @@ bool decrypt_zip(char* file_path, char* password) {
     }
 }
 
-char* generatePassword(uint64_t* testCounters, char* alphabet) {
+char* generateNextPassword(uint64_t* testCounters, char* alphabet) {
 
 }
 
@@ -88,7 +88,24 @@ char* descipherPassword_Serial(char* file_path, char* alphabet, uint64_t maxPwdL
             password[counter] = alphabet[testCounters[counter]];
         }
 
-        exitCondition = decrypt_zip(file_path, password);
+        // Check if all passwords have been tried
+        for (uint64_t counter = 0; counter < maxPwdLength; counter++) {
+            if (testCounters[counter] == sizeOfAlphabet - 1) {
+                exitCondition = true;
+            } else {
+                exitCondition = false;
+            }
+        }
+
+        // Tries generated password if not all passwords have been tested
+        if (!exitCondition) {
+            exitCondition = decrypt_zip(file_path, password);
+        } else {
+            return "";
+        }
+        
+
+        
         
     }
     
