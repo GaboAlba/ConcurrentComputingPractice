@@ -15,10 +15,10 @@
 
 #include "zip_operations.h"
 
-int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet, uint64_t maxPwdLength, uint64_t pwdLength);
+int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet, uint64_t maxPwdLength, uint64_t pwdLength, int64_t** testCounterFlags);
 
-char* translateCounterToPassword(uint64_t* testCounters, char* alphabet, uint64_t pwdLength);
+char* translateCounterToPassword(int64_t* testCounters, char* alphabet, uint64_t pwdLength, char* password);
 
-char* descipherPassword_Serial(char* file_path, char* alphabet, uint64_t maxPwdLength);
+char* descipherPassword_Serial(char* file_path, char* alphabet, uint64_t maxPwdLength, char* password);
 
 #endif

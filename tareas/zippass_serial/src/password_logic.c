@@ -13,16 +13,17 @@
 #include "password_logic.h"
 #include "zip_operations.h"
 
-
-int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet, uint64_t maxPwdLength, uint64_t pwdLength) {
-    int64_t** testCountersFlags = calloc(2, sizeof(int64_t*));
+/*
+@brief Reads the current state of 
+*/
+int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet, uint64_t maxPwdLength, uint64_t pwdLength, int64_t** testCountersFlags) {
     for (uint64_t cell = 0; cell < maxPwdLength; cell++) {
         if (testCounters[cell] >= sizeOfAlphabet - 1) {
             if(testCounters[cell + 1] == -1) {
                 pwdLength++;
                 testCounters[cell + 1] = 0;
                 testCounters[cell] = 0;
-                testCountersFlags[0] = (uint64_t*) pwdLength;
+                testCountersFlags[0] = (int64_t*) pwdLength;
                 testCountersFlags[1] = testCounters;
                 return testCountersFlags;
             }
@@ -32,24 +33,23 @@ int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet, u
             for (int clears = cell - 1; clears >= 0; clears--) {
                 testCounters[clears] = 0;
             }
-            testCountersFlags[0] = (uint64_t*) pwdLength;
+            testCountersFlags[0] = (int64_t*) pwdLength;
             testCountersFlags[1] = testCounters;
             return testCountersFlags;
         }
     }
-    free(testCountersFlags);
+    return testCountersFlags;
 }
 
-char* translateCounterToPassword(uint64_t* testCounters, char* alphabet, uint64_t pwdLength) {
-    char* password;
+char* translateCounterToPassword(int64_t* testCounters, char* alphabet, uint64_t pwdLength, char* password) {
     for (uint64_t counter = 0; counter < pwdLength; counter++) {
             password[counter] = alphabet[testCounters[counter]];
         }
     return password;
 }
 
-char* descipherPassword_Serial(char* file_path, char* alphabet, uint64_t maxPwdLength) {
-    char* password = calloc(maxPwdLength, sizeof(char));
+char* descipherPassword_Serial(char* file_path, char* alphabet, uint64_t maxPwdLength, char* password) {
+    //char* password = calloc(maxPwdLength, sizeof(char));
     int64_t* testCounters = calloc(maxPwdLength, sizeof(int64_t));
     uint64_t sizeOfAlphabet = strlen(alphabet);
     bool exitCondition = false;
@@ -70,16 +70,18 @@ char* descipherPassword_Serial(char* file_path, char* alphabet, uint64_t maxPwdL
     while (!exitCondition) {
             
         // Loop around the testCounters and look for the one that is not the maxCounter
-        testCounterFlags = generateNextPassword(testCounters, sizeOfAlphabet, maxPwdLength, pwdLength);
+        testCounterFlags = generateNextPassword(testCounters, sizeOfAlphabet, maxPwdLength, pwdLength, testCounterFlags);
         pwdLength = testCounterFlags[0];
 
         // Set password to the current combination
-        password = translateCounterToPassword(testCounters, alphabet, pwdLength);
+        password = translateCounterToPassword(testCounters, alphabet, pwdLength, password);
         printf("PWD: %s\n", password);
 
         // Throws error if password is longer the permitted
         if (pwdLength > maxPwdLength) {
             fprintf(stderr, "ERROR: The password generated is longer than permitted");
+            free(testCounters);
+            free(testCounterFlags);
             return "FAILURE";
         }
 
@@ -89,6 +91,7 @@ char* descipherPassword_Serial(char* file_path, char* alphabet, uint64_t maxPwdL
                 exitCondition = true;
             } else {
                 exitCondition = false;
+                break;
             }
         }
         

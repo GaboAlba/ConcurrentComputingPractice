@@ -19,13 +19,15 @@ int generatesNewPasswordCorrectlyChangingFirstNumber_Test() {
     currentCounters[0] = 1;
     currentCounters[1] = 9;
     currentCounters[2] = 7;
-    uint64_t** nextCounterFlags = generateNextPassword(currentCounters, alphabet, maxPwdLength,  PwdLength);
+    uint64_t** nextCounterFlags = generateNextPassword(currentCounters, alphabet, maxPwdLength,  PwdLength, nextCounterFlags);
     nextPwdLength = nextCounterFlags[0];
     nextCounters = nextCounterFlags[1];
     assert(nextPwdLength == PwdLength);
     assert(nextCounters[0] == 2);
     assert(nextCounters[1] == 9);
     assert(nextCounters[2] == 7);
+    free(currentCounters);
+    free(nextCounters);
     return 0;
 }
 
@@ -40,13 +42,15 @@ int generatesNewPasswordCorrectlyAddingNumber_Test() {
     currentCounters[0] = 9;
     currentCounters[1] = NULL;
     currentCounters[2] = NULL;
-    uint64_t** nextCounterFlags = generateNextPassword(currentCounters, alphabet, maxPwdLength,  PwdLength);
+    uint64_t** nextCounterFlags = generateNextPassword(currentCounters, alphabet, maxPwdLength,  PwdLength, nextCounterFlags);
     nextPwdLength = nextCounterFlags[0];
     nextCounters = nextCounterFlags[1];
     assert(nextPwdLength == PwdLength);
     assert(nextCounters[0] == 0);
     assert(nextCounters[1] == 0);
     assert(nextCounters[2] == NULL);
+    free(currentCounters);
+    free(nextCounters);
     return 0;
 }
 
