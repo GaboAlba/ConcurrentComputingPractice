@@ -23,7 +23,7 @@ int decrypt_zip(char* file_path, char* password) {
     // Open ZIP file
     zip_t* file = zip_open(file_path, ZIP_RDONLY, &error);
     if (file == NULL) {
-        fprintf(stderr, "ERROR: Failed to open file %s\n", zip_strerror(file));
+        //fprintf(stderr, "ERROR: Failed to open file %s\n", zip_strerror(file));
         return 0;
     }
 
@@ -33,7 +33,7 @@ int decrypt_zip(char* file_path, char* password) {
     error = zip_stat_index(file, 0, ZIP_STAT_INDEX, &zip_stats);
     if (error != 0) {
         zip_discard(file);
-        fprintf(stderr, "ERROR: Could not read file metadata\n");
+        //fprintf(stderr, "ERROR: Could not read file metadata\n");
         return 0;
     }
 
@@ -54,7 +54,7 @@ int decrypt_zip(char* file_path, char* password) {
         free(contents);
         zip_fclose(readFile);
         zip_discard(file);
-        fprintf(stderr, "ERROR: The value read from the file was not expected\n");
+        //fprintf(stderr, "ERROR: The value read from the file was not expected\n");
         return 0;
     }
 
