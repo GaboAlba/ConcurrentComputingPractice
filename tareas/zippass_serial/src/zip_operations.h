@@ -13,6 +13,17 @@
 #include <ctype.h>
 #include <stdbool.h>
 
+/**********************************************************************************************************************
+*    @brief Tries the password provided on the file provided 
+*    
+*    @param file_path       String containing the path to the file that must be unlocked
+*    @param password        String that will be tested to unlock the encrypted file               
+*
+*    @return An error code
+*       1 if password worked and unlocked file
+*       0 if an error happened
+*    
+**********************************************************************************************************************/
 int decrypt_zip(char* file_path, char* password);
 
 #endif

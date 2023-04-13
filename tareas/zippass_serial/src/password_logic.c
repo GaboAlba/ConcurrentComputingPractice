@@ -32,7 +32,6 @@
 *
 *    @return Array containing next the new pwdLength and testCounters
 *       testCounterFlags[2] 
-*    
 **********************************************************************************************************************/
 int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet, uint64_t maxPwdLength, uint64_t pwdLength, int64_t** testCountersFlags) {
     for (uint64_t cell = 0; cell < maxPwdLength; cell++) {
@@ -70,7 +69,6 @@ int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet, u
 *
 *    @return Password to be tested in the zip file
 *       password
-*    
 **********************************************************************************************************************/
 char* translateCounterToPassword(int64_t* testCounters, char* alphabet, uint64_t pwdLength, char* password) {
     for (uint64_t counter = 0; counter < pwdLength; counter++) {
@@ -80,25 +78,21 @@ char* translateCounterToPassword(int64_t* testCounters, char* alphabet, uint64_t
 }
 
 /**********************************************************************************************************************
-*    @brief Reads the current state of `testCounters` and determines the next password based on that information
+*    @brief Reads the encrypted file that has to be unlocked and searches for the password for the file
 *    
 *    @param file_path       String containing the path to the file that must be unlocked
 *    @param alphabet        Array of all possible values that the password can have in it's characters.
 *    @param maxPwdLength    Value that represents the maximum size of the password inputted in the standard input
 *    @param password        Pointer to where the password will be saved during it's testing and return 
 *
-*    @details It takes a dynamic array of testCounters and determines the next value. If the position being searched for is the last value of the alphabet
-*             it will initilize the next position of the array if the size permits it. In case the position being looked at is less than the last value of 
-*             the alphabet then it will add one to that position. For example:
+*    @details It iterates through brute force to get to the correct password generating different combinations until 
+*             a password is generated that unlocks and reads the file, or all combinations are used and no password 
+*             is determined
 *              
-*               With alphabet of size 10
-*               testCounters = [9,9,9,NULL] -> [0,0,0,0]
-*               testCounters = [0,4,7,8] -> [1,4,7,8]
 *
 *    @return The string of the password that unlocks the file in the zip file
 *       password if it was successfully determined
 *       void if the password was not able to be detected  
-*    
 **********************************************************************************************************************/
 char* descipherPassword_Serial(char* file_path, char* alphabet, uint64_t maxPwdLength, char* password) {
     //char* password = calloc(maxPwdLength, sizeof(char));

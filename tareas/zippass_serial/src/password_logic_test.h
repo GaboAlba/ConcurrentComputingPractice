@@ -19,7 +19,5 @@ void interpretsCountersCorrectly();
 
 int decryptsSimplePasswords_Test() ;
 
-int generateAllPossiblePwds_tests() ;
-
 
 #endif
