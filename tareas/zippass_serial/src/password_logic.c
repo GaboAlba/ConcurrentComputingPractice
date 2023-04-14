@@ -95,9 +95,12 @@ char* translateCounterToPassword(int64_t* testCounters, char* alphabet, uint64_t
 *       void if the password was not able to be detected  
 **********************************************************************************************************************/
 char* descipherPassword_Serial(char* file_path, char* alphabet, uint64_t maxPwdLength, char* password) {
-    //char* password = calloc(maxPwdLength, sizeof(char));
     int64_t* testCounters = calloc(maxPwdLength, sizeof(int64_t));
     uint64_t sizeOfAlphabet = strlen(alphabet);
+    char* lastPassword = calloc(maxPwdLength, sizeof(char));
+    for (uint8_t character = 0; character < maxPwdLength; character++) {
+        lastPassword[character] = alphabet[sizeOfAlphabet - 1];
+    }
     bool exitCondition = false;
     
     // init password array
@@ -106,53 +109,45 @@ char* descipherPassword_Serial(char* file_path, char* alphabet, uint64_t maxPwdL
             password[character] = alphabet[character];
             testCounters[character] = 0;
         }
-        password[character] = NULL;
+        password[character] = '\0';
         testCounters[character] = -1;
     }
 
     // Brute force descipher password
     uint64_t pwdLength = 1;
-    uint64_t** testCounterFlags = calloc(2, sizeof(uint64_t*));
-    while (!exitCondition) {
-            
+    int64_t** testCounterFlags = calloc(2, sizeof(uint64_t*));
+    while (!exitCondition) {   
         // Loop around the testCounters and look for the one that is not the maxCounter
         testCounterFlags = generateNextPassword(testCounters, sizeOfAlphabet, maxPwdLength, pwdLength, testCounterFlags);
         pwdLength = testCounterFlags[0];
 
         // Set password to the current combination
         password = translateCounterToPassword(testCounters, alphabet, pwdLength, password);
-        //printf("PWD: %s\n", password);
 
         // Throws error if password is longer the permitted
         if (pwdLength > maxPwdLength) {
             fprintf(stderr, "ERROR: The password generated is longer than permitted");
             free(testCounters);
             free(testCounterFlags);
+            free(lastPassword);
             return "FAILURE";
-        }
-
-        // Check if all passwords have been tried
-        for (uint64_t counter = 0; counter < maxPwdLength; counter++) {
-            if (testCounters[counter] == sizeOfAlphabet - 1) {
-                exitCondition = true;
-            } else {
-                exitCondition = false;
-                break;
-            }
         }
         
         // Tries generated password if not all passwords have been tested
-        if (!exitCondition) {
-            exitCondition = decrypt_zip(file_path, password);
-        } else {
-            free(testCounters);
-            free(testCounterFlags);
-            return "";
-        } 
-        
+        exitCondition = decrypt_zip(file_path, password);
 
+        if (!exitCondition) {
+            if (!strcmp(password, lastPassword)) {
+                free(testCounters);
+                free(testCounterFlags);
+                free(lastPassword);
+                password = "";
+                return password;
+            }
+        }
     }
     free(testCounters);
     free(testCounterFlags);
+    free(lastPassword);
     return password;
 }

@@ -73,17 +73,16 @@ int main(void) {
     // Decipher passwords
     struct timespec start_time, finish_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
-    char* password = calloc(maxLength, sizeof(char));
-
+    
     // Print whitespace for better visualization
     for (int8_t spaces = 0; spaces < 5; spaces++) {
         printf("\n");
     }
-    
-    
+    char* password = calloc(maxLength, sizeof(char));
+    char** passwordArray = calloc(fileCount, sizeof(char*));
     for (uint64_t file = 0; file < fileCount; file++) {
-        password = descipherPassword_Serial(files[file], alphabet, maxLength, password);
-        printf("%s %s\n", files[file], password);
+        passwordArray[file] = descipherPassword_Serial(files[file], alphabet, maxLength, password);
+        printf("%s %s\n", files[file], passwordArray[file]);
     }
 
     clock_gettime(CLOCK_MONOTONIC, &finish_time);
@@ -96,5 +95,6 @@ int main(void) {
     free(files);
     free(file);
     free(password);
+    free(passwordArray);
     return error;
 }
