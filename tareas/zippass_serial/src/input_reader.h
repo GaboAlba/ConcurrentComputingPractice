@@ -15,4 +15,14 @@ int countChar(char* str, char c);
 
 char** lineator(char* origin);
 
+int validateAlphabet(char* alphabet);
+
+int validateLength(char* length);
+
+int validateEmptyLine(char* emptyLine);
+
+int validateFileFormat(char* file);
+
+int validateFileExists(char* file);
+
 #endif
