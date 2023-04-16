@@ -1,3 +1,4 @@
+// Copyright yman@StackOverflow
 // Taken from https://stackoverflow.com/questions/17983005/c-how-to-read-a-string-line-by-line
 
 #include <stdio.h>

@@ -1,3 +1,5 @@
+// Copyright [2023] Gabriel Alba Romero <gabriel.alba@ucr.ac.cr>
+
 #ifndef PASSWORD_LOGIC_TEST_H
 #define PASSWORD_LOGIC_TEST_H
 
@@ -11,13 +13,13 @@
 
 #include "password_logic.h"
 
-int generatesNewPasswordCorrectlyChangingFirstNumber_Test() ;
+int generatesNewPasswordCorrectlyChangingFirstNumber_Test();
 
-int generatesNewPasswordCorrectlyAddingNumber_Test() ;
+int generatesNewPasswordCorrectlyAddingNumber_Test();
 
 void interpretsCountersCorrectly();
 
-int decryptsSimplePasswords_Test() ;
+int decryptsSimplePasswords_Test();
 
 
 #endif

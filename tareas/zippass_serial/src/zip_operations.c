@@ -43,8 +43,11 @@ int decrypt_zip(char* file_path, char* password) {
         return 0;
     }
 
-    //Read data from the compressed file
-    zip_file_t* readFile = zip_fopen_index_encrypted(file, 0, ZIP_FL_NOCASE, password);
+    // Read data from the compressed file
+    zip_file_t* readFile = zip_fopen_index_encrypted(/*zip_t*/ file,
+                                                    /*index*/ 0,
+                                                    /*flag*/ ZIP_FL_NOCASE,
+                                                    /*pwd*/ password);
     char* contents = calloc(zip_stats.size, sizeof(char));
     error = zip_fread(readFile, contents, zip_stats.size);
     if (error == -1) {
