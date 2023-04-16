@@ -1,42 +1,12 @@
-procedure validateASCIIInput(input) {
-    if (input.isascii) {
-        return 0
-    } else {
-        return 1
-    }
-}
-
-procedure validateInputFormat(inputLines) {
-    if (inputLines[0].repeatCharacters) {
-        print("Repeated chars are not accepted")
-    }
-
-    if (inputLines[1].isNotNumber) {
-        print("Length only accepts numbers")
-    }
-
-    if (inputLines[2].isNotBlank) {
-        print("A blank line is expected between Length and Files")
-    }
-
-    if (inputLines[3:].notDotZipFormat) {
-        print("Only ZIP files are permitted")
-    }
-
-    if (inputLines[3:].fileNotExist) {
-        print("File X doesn't exist, please enter a valid address")
-    }
-}
-
 procedure main() {
     allocate input
     allocate password
     input.read()
-    validateASCIIInput(input)
-    validateInputFormat(input)
+    external validateASCIIInput(input)
+    external validateInputFormat(input)
     StartClock()
     for (files) {
-        descipherPassword(file)
+        external descipherPassword(file)
     }
     StopClock()
     free(input)
