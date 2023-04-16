@@ -33,10 +33,13 @@
 *    @return Array containing next the new pwdLength and testCounters
 *       testCounterFlags[2] 
 **********************************************************************************************************************/
-int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet, uint64_t maxPwdLength, uint64_t pwdLength, int64_t** testCountersFlags) {
+int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet,
+                               uint64_t maxPwdLength, uint64_t pwdLength,
+                               int64_t** testCountersFlags) {
+    // Iterate through all test counters until you found one that is changed
     for (uint64_t cell = 0; cell < maxPwdLength; cell++) {
         if (testCounters[cell] >= sizeOfAlphabet - 1) {
-            if(testCounters[cell + 1] == -1) {
+            if (testCounters[cell + 1] == -1) {
                 pwdLength++;
                 testCounters[cell + 1] = 0;
                 testCounters[cell] = 0;
@@ -46,7 +49,8 @@ int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet, u
             }
         } else {
             testCounters[cell]++;
-            // Clean all previous cells to first character when changing that one
+            // Clean all previous cells to first character when
+            // changing that one
             for (int clears = cell - 1; clears >= 0; clears--) {
                 testCounters[clears] = 0;
             }
@@ -70,10 +74,13 @@ int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet, u
 *    @return Password to be tested in the zip file
 *       password
 **********************************************************************************************************************/
-char* translateCounterToPassword(int64_t* testCounters, char* alphabet, uint64_t pwdLength, char* password) {
+char* translateCounterToPassword(int64_t* testCounters, char* alphabet,
+                                 uint64_t pwdLength, char* password) {
+    // Assign testCounter alphabet values to the password
     for (uint64_t counter = 0; counter < pwdLength; counter++) {
             password[counter] = alphabet[testCounters[counter]];
         }
+
     return password;
 }
 
@@ -94,7 +101,9 @@ char* translateCounterToPassword(int64_t* testCounters, char* alphabet, uint64_t
 *       password if it was successfully determined
 *       void if the password was not able to be detected  
 **********************************************************************************************************************/
-char* descipherPassword_Serial(char* file_path, char* alphabet, uint64_t maxPwdLength, char* password) {
+char* descipherPassword_Serial(char* file_path, char* alphabet,
+                               uint64_t maxPwdLength, char* password) {
+    // Define dynamic memory usage
     int64_t* testCounters = calloc(maxPwdLength, sizeof(int64_t));
     uint64_t sizeOfAlphabet = strlen(alphabet);
     char* lastPassword = calloc(maxPwdLength, sizeof(char));
@@ -102,8 +111,8 @@ char* descipherPassword_Serial(char* file_path, char* alphabet, uint64_t maxPwdL
         lastPassword[character] = alphabet[sizeOfAlphabet - 1];
     }
     bool exitCondition = false;
-    
-    // init password array
+
+    // Init password array
     for (uint64_t character = 0; character < maxPwdLength; character++) {
         if (character == 0) {
             password[character] = alphabet[character];
@@ -116,23 +125,31 @@ char* descipherPassword_Serial(char* file_path, char* alphabet, uint64_t maxPwdL
     // Brute force descipher password
     uint64_t pwdLength = 1;
     int64_t** testCounterFlags = calloc(2, sizeof(uint64_t*));
-    while (!exitCondition) {   
-        // Loop around the testCounters and look for the one that is not the maxCounter
-        testCounterFlags = generateNextPassword(testCounters, sizeOfAlphabet, maxPwdLength, pwdLength, testCounterFlags);
+    while (!exitCondition) {
+        // Loop around the testCounters and look for the one
+        // that is not the maxCounter
+        testCounterFlags = generateNextPassword(testCounters,
+                                                sizeOfAlphabet,
+                                                maxPwdLength,
+                                                pwdLength,
+                                                testCounterFlags);
         pwdLength = testCounterFlags[0];
 
         // Set password to the current combination
-        password = translateCounterToPassword(testCounters, alphabet, pwdLength, password);
+        password = translateCounterToPassword(testCounters,
+                                              alphabet,
+                                              pwdLength,
+                                              password);
 
         // Throws error if password is longer the permitted
         if (pwdLength > maxPwdLength) {
-            fprintf(stderr, "ERROR: The password generated is longer than permitted");
+            fprintf(stderr, "ERROR: Password is longer than permitted");
             free(testCounters);
             free(testCounterFlags);
             free(lastPassword);
             return "FAILURE";
         }
-        
+
         // Tries generated password if not all passwords have been tested
         exitCondition = decrypt_zip(file_path, password);
 

@@ -1,3 +1,5 @@
+// Copyright [2023] Gabriel Alba Romero <gabriel.alba@ucr.ac.cr>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -19,7 +21,11 @@ void generatesNewPasswordCorrectlyChangingFirstNumber_Test() {
     currentCounters[0] = 1;
     currentCounters[1] = 9;
     currentCounters[2] = 7;
-    uint64_t** nextCounterFlags = generateNextPassword(currentCounters, alphabet, maxPwdLength,  PwdLength, nextCounterFlags);
+    uint64_t** nextCounterFlags = generateNextPassword(currentCounters,
+                                                        alphabet,
+                                                        maxPwdLength,
+                                                        PwdLength,
+                                                        nextCounterFlags);
     nextPwdLength = nextCounterFlags[0];
     nextCounters = nextCounterFlags[1];
     assert(nextPwdLength == PwdLength);
@@ -42,7 +48,11 @@ void generatesNewPasswordCorrectlyAddingNumber_Test() {
     currentCounters[0] = 9;
     currentCounters[1] = NULL;
     currentCounters[2] = NULL;
-    uint64_t** nextCounterFlags = generateNextPassword(currentCounters, alphabet, maxPwdLength,  PwdLength, nextCounterFlags);
+    uint64_t** nextCounterFlags = generateNextPassword(currentCounters,
+                                                        alphabet,
+                                                        maxPwdLength,
+                                                        PwdLength,
+                                                        nextCounterFlags);
     nextPwdLength = nextCounterFlags[0];
     nextCounters = nextCounterFlags[1];
     assert(nextPwdLength == PwdLength);

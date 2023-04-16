@@ -27,7 +27,11 @@
 *    @return Array containing next the new pwdLength and testCounters
 *       testCounterFlags[2] 
 **********************************************************************************************************************/
-int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet, uint64_t maxPwdLength, uint64_t pwdLength, int64_t** testCounterFlags);
+int64_t** generateNextPassword(int64_t* testCounters,
+                               uint64_t sizeOfAlphabet,
+                               uint64_t maxPwdLength,
+                               uint64_t pwdLength,
+                               int64_t** testCounterFlags);
 
 /**********************************************************************************************************************
 *    @brief Assigns the characters of the alphabet associated to the testCounter to the password for testing
@@ -40,7 +44,10 @@ int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet, u
 *    @return Password to be tested in the zip file
 *       password
 **********************************************************************************************************************/
-char* translateCounterToPassword(int64_t* testCounters, char* alphabet, uint64_t pwdLength, char* password);
+char* translateCounterToPassword(int64_t* testCounters,
+                                 char* alphabet,
+                                 uint64_t pwdLength,
+                                 char* password);
 
 /**********************************************************************************************************************
 *    @brief Reads the encrypted file that has to be unlocked and searches for the password for the file
@@ -54,6 +61,9 @@ char* translateCounterToPassword(int64_t* testCounters, char* alphabet, uint64_t
 *       password if it was successfully determined
 *       void if the password was not able to be detected    
 **********************************************************************************************************************/
-char* descipherPassword_Serial(char* file_path, char* alphabet, uint64_t maxPwdLength, char* password);
+char* descipherPassword_Serial(char* file_path,
+                               char* alphabet,
+                               uint64_t maxPwdLength,
+                               char* password);
 
 #endif

@@ -1,5 +1,6 @@
 // Copyright [2023] Gabriel Alba Romero <gabriel.alba@ucr.ac.cr>
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -29,7 +30,8 @@ int validateASCIIInput(char input[]) {
         int error = __isascii(input[character]);
         if (error) {
         } else {
-            fprintf(stderr,"ERROR: Character %c is not ASCII\n",input[character]);
+            fprintf(stderr, "ERROR: Character %c is not ASCII\n",
+                    input[character]);
             error = 2;
             break;
         }
@@ -45,10 +47,10 @@ int validateASCIIInput(char input[]) {
 *        int for any error
 ***********************************************************************************************************************/
 int main(void) {
-    int64_t maxCharacters = 999;
-    char input[maxCharacters];
+    const int64_t kMaxCharacters = 999;
+    char input[kMaxCharacters];
     printf("Please enter required information (use ; when finished): \n");
-    int8_t error = scanf("%[^;]s",&input);
+    int8_t error = scanf("%[^;]s", &input);
     if (error > 0) {
     } else {
         fprintf(stderr, "ERROR: Could not read input\n");
@@ -60,20 +62,21 @@ int main(void) {
     char** lines = lineator(input);
     char* alphabet = calloc(128, sizeof(char));
     alphabet = lines[0];
-    alphabet = strcat(alphabet,"\0");
+    alphabet = strcat(alphabet, "\0");
     uint64_t maxLength = strtoull(lines[1], NULL, 10);
-    char** files = (char**) calloc(lineCount-3,sizeof(char*));
+    char** files = (char**) calloc(lineCount-3, sizeof(char*));
     char* file = (char*) calloc(128, sizeof(char));
-    
+
+    // Assign files to a single data structure
     for (uint64_t line = 3; line < lineCount; line++) {
         file = lines[line];
         files[line - 3] = file;
     }
-    
+
     // Decipher passwords
     struct timespec start_time, finish_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
-    
+
     // Print whitespace for better visualization
     for (int8_t spaces = 0; spaces < 5; spaces++) {
         printf("\n");
@@ -81,7 +84,10 @@ int main(void) {
     char* password = calloc(maxLength, sizeof(char));
     char** passwordArray = calloc(fileCount, sizeof(char*));
     for (uint64_t file = 0; file < fileCount; file++) {
-        passwordArray[file] = descipherPassword_Serial(files[file], alphabet, maxLength, password);
+        passwordArray[file] = descipherPassword_Serial(files[file],
+                                                        alphabet,
+                                                        maxLength,
+                                                        password);
         printf("%s %s\n", files[file], passwordArray[file]);
     }
 

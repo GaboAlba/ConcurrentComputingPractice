@@ -1,3 +1,5 @@
+// Copyright [2023] Gabriel Alba Romero <gabriel.alba@ucr.ac.cr>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -41,14 +43,17 @@ void openWithPassword_Test() {
     zip_t* file = zip_open(file_path, ZIP_RDONLY, &error);
     assert(file != NULL);
 
-    //Initialize metadata
+    // Initialize metadata
     zip_stat_t zip_stats;
     zip_stat_init(&zip_stats);
     error = zip_stat_index(file, 0, ZIP_STAT_INDEX, &zip_stats);
     assert(error == 0);
 
     // Read the data inside
-    zip_file_t* readFile = zip_fopen_index_encrypted(file, 0, ZIP_FL_NOCASE, "@");
+    zip_file_t* readFile = zip_fopen_index_encrypted(/*zip_t*/ file,
+                                                    /*index*/ 0,
+                                                    /*flag*/ ZIP_FL_NOCASE,
+                                                    /*pwd*/ password);
     char* contents = calloc(zip_stats.size, sizeof(char));
     error = zip_fread(readFile, contents, zip_stats.size);
     assert(error != -1);
@@ -66,7 +71,7 @@ void openTestCase() {
     zip_t* file = zip_open(file_path, ZIP_RDONLY, &error);
     assert(file != NULL);
 
-    //Initialize metadata
+    // Initialize metadata
     zip_stat_t zip_stats;
     zip_stat_init(&zip_stats);
     error = zip_stat_index(file, 0, ZIP_STAT_INDEX, &zip_stats);
@@ -75,7 +80,10 @@ void openTestCase() {
     printf("Index: %i\n", zip_stats.index);
 
     // Read the data inside
-    zip_file_t* readFile = zip_fopen_index_encrypted(file, 0, ZIP_FL_NOCASE, password);
+    zip_file_t* readFile = zip_fopen_index_encrypted(/*zip_t*/ file,
+                                                    /*index*/ 0,
+                                                    /*flag*/ ZIP_FL_NOCASE,
+                                                    /*pwd*/ password);
     char* contents = calloc(zip_stats.size, sizeof(char));
     error = zip_fread(readFile, contents, zip_stats.size);
     assert(error != -1);
