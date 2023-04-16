@@ -1,0 +1,18 @@
+procedure countChar(str, char) {
+    lines = 0
+    for (character in str) {
+        if character == char :
+            lines++
+    }
+    return lines
+}
+
+procedure lineator(str) {
+    char** lines
+    while("\n" exists) {
+        character.append(lines[x][0:"\n"])
+        x++
+    } 
+
+    return lines
+}
