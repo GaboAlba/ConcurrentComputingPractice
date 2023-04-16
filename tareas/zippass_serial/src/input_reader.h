@@ -15,14 +15,8 @@ int countChar(char* str, char c);
 
 char** lineator(char* origin);
 
-int validateAlphabet(char* alphabet);
+int validateASCIIInput(char input[]);
 
-int validateLength(char* length);
-
-int validateEmptyLine(char* emptyLine);
-
-int validateFileFormat(char* file);
-
-int validateFileExists(char* file);
+int validateInputFormat(char** lines, uint64_t lineCount);
 
 #endif
