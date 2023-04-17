@@ -1,4 +1,5 @@
 // Copyright [2023] Gabriel Alba Romero <gabriel.alba@ucr.ac.cr>
+// These tests are still under development, use them under your own risk
 
 #ifndef ZIP_OPERATIONS_TEST_H
 #define ZIP_OPERATIONS_TEST_H
