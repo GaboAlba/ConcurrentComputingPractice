@@ -13,38 +13,51 @@
 #include "password_logic.h"
 #include "zip_operations.h"
 
-//******************************************************************************************************************
-///    @brief Reads the current state of **testCounters** and determines the next password based on that information
-///    
-///    @param testCounters        Array of values representing the value of the alphabet in the current password characters
-///    @param sizeOfAlphabet      Value that represents the size of the alphabet inputted in the standard input
-///    @param maxPwdLength        Value that represents the maximum size of the password inputted in the standard input
-///    @param pwdLength           Current password length
-///    @param testCountersFlags    Array containing the current pwdLength and testCounters
+//*****************************************************************************
+/// @brief Reads the current state of **testCounters** and determines the
+///        next password based on that information
 ///
-///    @details It takes a dynamic array of testCounters and determines the next value. If the position being searched for is the last value of the alphabet
-///             it will initilize the next position of the array if the size permits it. In case the position being looked at is less than the last value of 
-///             the alphabet then it will add one to that position. For example:
-///              
-///               With alphabet of size 10:
+/// @param testCounters        Array of values representing the value of the
+///                            alphabet in the current password characters
 ///
-///               testCounters = [9,9,9,NULL] -> [0,0,0,0]
+/// @param sizeOfAlphabet      Value that represents the size of the alphabet
+///                            inputted in the standard input
 ///
-///               testCounters = [0,4,7,8] -> [1,4,7,8]
+/// @param maxPwdLength        Value that represents the maximum size of the
+///                            password inputted in the standard input
 ///
-///    @return testCounterFlags: Array containing next the new pwdLength and testCounters
-//******************************************************************************************************************   
-int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet,
-                               uint64_t maxPwdLength, uint64_t pwdLength,
-                               int64_t** testCountersFlags) {
+/// @param pwdLength           Current password length
+///
+/// @param testCountersFlags   Array containing the current pwdLength and
+///                            testCounters
+///
+/// @details It takes a dynamic array of testCounters and determines the next
+///          value. If the position being searched for is the last value of the
+///          alphabet it will initialize the next position of the array if the
+///          size permits it. In case the position being looked at is less than
+///          the last value of the alphabet then it will add one to that
+///          position. For example:
+///
+///            With alphabet of size 10:
+///
+///            testCounters = [9,9,9,NULL] -> [0,0,0,0]
+///
+///            testCounters = [0,4,7,8] -> [1,4,7,8]
+///
+/// @return testCounterFlags: Array containing next the new pwdLength and
+///         testCounters
+//*****************************************************************************
+int8_t** generateNextPassword(int8_t* testCounters, uint8_t sizeOfAlphabet,
+                               uint8_t maxPwdLength, uint8_t pwdLength,
+                               int8_t** testCountersFlags) {
     // Iterate through all test counters until you found one that is changed
-    for (uint64_t cell = 0; cell < maxPwdLength; cell++) {
+    for (uint8_t cell = 0; cell < maxPwdLength; cell++) {
         if (testCounters[cell] >= sizeOfAlphabet - 1) {
             if (testCounters[cell + 1] == -1) {
                 pwdLength++;
                 testCounters[cell + 1] = 0;
                 testCounters[cell] = 0;
-                testCountersFlags[0] = (int64_t*) pwdLength;
+                testCountersFlags[0] = (int8_t*) pwdLength;
                 testCountersFlags[1] = testCounters;
                 return testCountersFlags;
             }
@@ -55,55 +68,68 @@ int64_t** generateNextPassword(int64_t* testCounters, uint64_t sizeOfAlphabet,
             for (int clears = cell - 1; clears >= 0; clears--) {
                 testCounters[clears] = 0;
             }
-            testCountersFlags[0] = (int64_t*) pwdLength;
+            testCountersFlags[0] = (int8_t*) pwdLength;
             testCountersFlags[1] = testCounters;
             return testCountersFlags;
         }
     }
     return testCountersFlags;
 }
-//******************************************************************************************************************
-///    @brief Assigns the characters of the alphabet associated to the testCounter to the password for testing
-///    
-///    @param testCounters    Array of values representing the value of the alphabet in the current password characters
-///    @param alphabet        Array of all possible values that the password can have in it's characters.
-///    @param pwdLength       Current password length
-///    @param password        Current password that has already been tested and will be modified 
+//*****************************************************************************
+/// @brief Assigns the characters of the alphabet associated to the testCounter
+///        to the password for testing
 ///
-///    @return Password to be tested in the zip file
-//******************************************************************************************************************
-char* translateCounterToPassword(int64_t* testCounters, char* alphabet,
-                                 uint64_t pwdLength, char* password) {
+/// @param testCounters    Array of values representing the value of the
+///                        alphabet in the current password characters
+///
+/// @param alphabet        Array of all possible values that the password can
+///                        have in it's characters.
+///
+/// @param pwdLength       Current password length
+///
+/// @param password        Current password that has already been tested and
+///                        will be modified
+///
+/// @return Password to be tested in the zip file
+//*****************************************************************************
+char* translateCounterToPassword(int8_t* testCounters, char* alphabet,
+                                 uint8_t pwdLength, char* password) {
     // Assign testCounter alphabet values to the password
-    for (uint64_t counter = 0; counter < pwdLength; counter++) {
+    for (uint8_t counter = 0; counter < pwdLength; counter++) {
             password[counter] = alphabet[testCounters[counter]];
         }
 
     return password;
 }
 
-//*******************************************************************************************************************
-///    @brief Reads the encrypted file that has to be unlocked and searches for the password for the file
-///    
-///    @param file_path       String containing the path to the file that must be unlocked
-///    @param alphabet        Array of all possible values that the password can have in it's characters.
-///    @param maxPwdLength    Value that represents the maximum size of the password inputted in the standard input
-///    @param password        Pointer to where the password will be saved during it's testing and return 
+//***************************************************************************
+/// @brief Reads the encrypted file that has to be unlocked and searches for
+///        the password for the file
 ///
-///    @details It iterates through brute force to get to the correct password generating different combinations until 
-///             a password is generated that unlocks and reads the file, or all combinations are used and no password 
-///             is determined
-///              
+/// @param file_path       String containing the path to the file that must be
+///                        unlocked
+/// @param alphabet        Array of all possible values that the password can
+///                        have in it's characters.
+/// @param maxPwdLength    Value that represents the maximum size of the
+///                        password inputted in the standard input
+/// @param password        Pointer to where the password will be saved during
+///                        it's testing and return
 ///
-///    @return The string of the password that unlocks the file in the zip file
-///       @retval password if it was successfully determined
-///       @retval void if the password was not able to be detected  
-//******************************************************************************************************************
+/// @details It iterates through brute force to get to the correct password
+///          generating different combinations until a password is generated
+///          that unlocks and reads the file, or all combinations are used
+///          and no password is determined
+///
+///
+/// @return The string of the password that unlocks the file in the zip file
+///    @retval password if it was successfully determined
+///    @retval void if the password was not able to be detected
+//***************************************************************************
 char* descipherPassword_Serial(char* file_path, char* alphabet,
-                               uint64_t maxPwdLength, char* password) {
+                               uint8_t maxPwdLength, char* password) {
     // Define dynamic memory usage
-    int64_t* testCounters = calloc(maxPwdLength, sizeof(int64_t));
-    uint64_t sizeOfAlphabet = strlen(alphabet);
+    int8_t* testCounters = calloc(maxPwdLength, sizeof(int8_t));
+    uint8_t sizeOfAlphabet = strlen(alphabet);
     char* lastPassword = calloc(maxPwdLength, sizeof(char));
     for (uint8_t character = 0; character < maxPwdLength; character++) {
         lastPassword[character] = alphabet[sizeOfAlphabet - 1];
@@ -111,7 +137,7 @@ char* descipherPassword_Serial(char* file_path, char* alphabet,
     bool exitCondition = false;
 
     // Init password array
-    for (uint64_t character = 0; character < maxPwdLength; character++) {
+    for (uint8_t character = 0; character < maxPwdLength; character++) {
         if (character == 0) {
             password[character] = alphabet[character];
             testCounters[character] = 0;
@@ -121,8 +147,8 @@ char* descipherPassword_Serial(char* file_path, char* alphabet,
     }
 
     // Brute force descipher password
-    uint64_t pwdLength = 1;
-    int64_t** testCounterFlags = calloc(2, sizeof(uint64_t*));
+    uint8_t pwdLength = 1;
+    int8_t** testCounterFlags = calloc(2, sizeof(int8_t*));
     while (!exitCondition) {
         // Loop around the testCounters and look for the one
         // that is not the maxCounter

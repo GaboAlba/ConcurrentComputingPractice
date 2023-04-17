@@ -17,6 +17,6 @@ char** lineator(char* origin);
 
 int validateASCIIInput(char input[]);
 
-int validateInputFormat(char** lines, uint64_t lineCount);
+int validateInputFormat(char** lines, uint8_t lineCount);
 
 #endif
