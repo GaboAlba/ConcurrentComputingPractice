@@ -15,4 +15,8 @@ int countChar(char* str, char c);
 
 char** lineator(char* origin);
 
+int validateASCIIInput(char input[]);
+
+int validateInputFormat(char** lines, uint64_t lineCount);
+
 #endif

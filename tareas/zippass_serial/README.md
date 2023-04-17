@@ -1,5 +1,7 @@
 # ZIPPASS_SERIAL
 
+For information regarding the design of the system: [DesignREADME](design/README.md)
+
 ## Problem Description
 -----
 -----
@@ -68,6 +70,8 @@ In case a file doesn't show a password it means the password was not able to be 
 ## Credits
 -------
 -------
-Thanks to @yman in StackOverflow for the implementation of the methods used in `input_reader`.
+Thanks to @yman in StackOverflow for the implementation of the methods `charCount` and `lineator` used in `input_reader`.
+
+Thanks to java2s.com for the implementation of the methods `qs` and `quickSort` used in `input_reader`
 
 All other work is property of Gabriel Alba: <gabriel.alba@ucr.ac.cr>

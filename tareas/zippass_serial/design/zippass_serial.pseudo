@@ -1,0 +1,15 @@
+procedure main() {
+    allocate input
+    allocate password
+    input.read()
+    external validateASCIIInput(input)
+    external validateInputFormat(input)
+    StartClock()
+    for (files) {
+        external descipherPassword(file)
+    }
+    StopClock()
+    free(input)
+    free(password)
+
+}

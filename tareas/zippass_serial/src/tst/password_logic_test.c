@@ -1,5 +1,6 @@
 // Copyright [2023] Gabriel Alba Romero <gabriel.alba@ucr.ac.cr>
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
