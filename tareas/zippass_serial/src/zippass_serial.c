@@ -81,6 +81,8 @@ int main(void) {
     printf("%s %s\n", files[file], passwordArray[file]);
   }
 
+  printf("---Password(s) decrypted---\n");
+
   // Stop taking time
   clock_gettime(CLOCK_MONOTONIC, &finish_time);
   double elapsed_time = finish_time.tv_sec - start_time.tv_sec +
