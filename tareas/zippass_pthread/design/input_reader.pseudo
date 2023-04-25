@@ -1,0 +1,88 @@
+procedure getLineCount(str, char) {
+    lines = 0
+    for (character in str) {
+        if character == char :
+            lines++
+    }
+    return lines
+}
+
+procedure getLines(str) {
+    char** lines
+    while("\n" exists) {
+        character.append(lines[x][0:"\n"])
+        x++
+    } 
+
+    return lines
+}
+
+procedure validateInput(input) {
+    validateAlphabet(input)
+    validateLength(input)
+    validateEmptyLine(input)
+    validateFileFormat(input)
+    validateFileExists(input)
+    if (allPass) {
+        return 0
+    } else {
+        return 1
+    }
+}
+
+procedure validateASCIIInput(input) {
+    if (input.isascii) {
+        return 0
+    } else {
+        return 1
+    }
+}
+
+procedure validateAlphabet(alphabet) {
+    sort(alphabet)
+    for elements in alphabet {
+        if element == element + 1 {
+            return 1
+        }
+        element++
+    }
+    return 0
+}
+
+procedure validateLength(maxLength) {
+    for character in maxLength {
+        validate(character in "0123456789")
+        if (!valid) {
+            return 1
+        }
+    }
+    return 0
+}
+
+procedure validateEmptyLine(line[2]) {
+    if *line[2] == '\0' OR *line[2] == " " {
+        return 0
+    } else {
+        return 1
+    }
+    
+}
+
+procedure validateFileFormat(filePath) {
+    define REGEX 
+    if filePath.validate(REGEX) {
+        return 0
+    } else {
+        return 1
+    }
+}
+
+procedure validateFileExists(filePath) {
+    try open_zip(filePath)
+    if (open_zip) {
+        return 0
+    } else {
+        return 1
+    }
+
+}

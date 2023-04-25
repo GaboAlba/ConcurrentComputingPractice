@@ -1,0 +1,14 @@
+procedure main() {
+    allocate input
+    allocate password
+    input.read()
+    external validateASCIIInput(input)
+    external validateInputFormat(input)
+    StartClock()
+    createThreads()
+    StopClock()
+    orderedPrint(file, file.password)
+    free(input)
+    free(password)
+
+}

@@ -1,0 +1,35 @@
+procedure createPwdGeneratorThread(int beginningCharNum, int endCharNum, publicData) {
+    password = alphabet.beginningCharNum
+    while(!allFilesUnlocked || !allPasswordsGenerated) {
+        publiData.sem.wait()
+        pushIntoQueue(password)
+        publicData.sem.post()
+        password = generateNewPassword(password)
+    }
+    exit_thread()
+}
+
+procedure createFileTesterThread(publicData.passwordQueue, fileList) {
+    while (!allFilesUnlocked) {
+        for file in files {
+            error = decrypt_zip(file, passwordQueue[len - 1])
+            if error == 0 {
+                publicData.sem2.wait()
+                filesDecrypted++
+                publicData.sem2.post()
+                if filesDecrypted == fileCount  {
+                    allFilesUnlocked = TRUE
+                }
+            }
+        }
+        passwordQueue[len - 1].pop()
+    }
+    free(passwordQueue)
+    exit_thread()
+}
+
+
+procedure createThreads(numOfThreads, numOfFiles, alphabetSize) {
+    // This function will optimize the number of threads based on the alphabetSize, the number of files and the numberOfThreads
+}
+
