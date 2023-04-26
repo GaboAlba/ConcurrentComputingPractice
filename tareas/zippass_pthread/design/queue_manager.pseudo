@@ -1,0 +1,14 @@
+procedure createQueue(QueueData, thread_number) {
+    QueueData.Queue = calloc(1, sizeof(char*));
+    QueueData.QueueId = thread_number - 1;
+    return QueueData;
+}
+
+
+procedure pushQueue(value,QueueId) {
+// This will push a new value into the start of the queue
+}
+
+procedure popQueue(QueueId) {
+// This will pop the last value in the queue
+}
