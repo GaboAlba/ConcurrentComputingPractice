@@ -13,9 +13,12 @@
 ///        thread
 typedef struct publicData {
     char* alphabet;
+    char** fileList;
     uint8_t sizeOfAlphabet;
     uint8_t maxPwdLength;
     uint8_t threadCount;
+    uint8_t fileCount;
+    uint8_t filesUnlocked;
 } publicData_t;
 
 typedef struct FilesData {
@@ -26,6 +29,7 @@ typedef struct FilesData {
 
 typedef struct QueueData {
     char** Queue;
+    uint64_t QueueSize;
     uint8_t QueueId;
 } QueueData_t;
 
