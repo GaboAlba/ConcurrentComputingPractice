@@ -20,7 +20,23 @@
 #include "password_logic.h"
 #include "zip_operations_test.h"
 #include "exec_time_test.h"
-#include "data_structures.h"
+//#include "data_structures.h"
+
+
+/// @brief Struct that defines the data that can be accessed by any file and/or
+///        thread
+typedef struct publicData {
+    char* alphabet;
+    uint8_t maxLength;
+} publicData_t;
+
+/// @brief Struct that defines the data that is property of the file and/or
+///        thread and may not be shared among them
+typedef struct privateData {
+    char* filePath;
+    char* password;
+    publicData_t* publicData;
+} privateData_t;
 
 //**********************************************************************************************************************
 ///    @brief Asks the user for the input and validates it. After this it calls
