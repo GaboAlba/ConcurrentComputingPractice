@@ -8,6 +8,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <semaphore.h>
 
 /// @brief Struct that defines the data that can be accessed by any file and/or
 ///        thread
@@ -19,6 +20,7 @@ typedef struct publicData {
     uint8_t threadCount;
     uint8_t fileCount;
     uint8_t filesUnlocked;
+    sem_t semaphore;
 } publicData_t;
 
 typedef struct FilesData {
@@ -29,7 +31,10 @@ typedef struct FilesData {
 
 typedef struct QueueData {
     char** Queue;
-    uint64_t QueueSize;
+    int64_t rear;
+    int64_t front;
+    uint64_t QueueMaxSize;
+    uint64_t QueueCurrentSize;
     uint8_t QueueId;
 } QueueData_t;
 
@@ -37,7 +42,7 @@ typedef struct QueueData {
 ///        thread and may not be shared among them
 typedef struct threadData {
     uint8_t threadNumber;
-    QueueData_t* QueueData;
-    FilesData_t* FilesData;
+    QueueData_t** QueueData;
+    FilesData_t** FilesData;
     publicData_t* publicData;
 } threadData_t;

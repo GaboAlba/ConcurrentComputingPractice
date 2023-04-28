@@ -22,8 +22,8 @@ Also, to decide best way to paralelize based on the ratio between passwordGenera
 // PasswordGenerator 5 digit test. 1000 iterations
 void passwordGenTimer() {
     char* password = calloc(5, sizeof(char));
-    char* alphabet = "0123456789";
-    uint8_t sizeofAlphabet = 10;
+    char* alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+    uint8_t sizeofAlphabet = 36;
     uint8_t maxPwdLength = 5;
     uint8_t pwdLength = 5;
     int8_t* testCounters = calloc(5, sizeof(int8_t));
@@ -35,19 +35,19 @@ void passwordGenTimer() {
     testCounterFlags[1] = testCounters;
 
     // Init password array
-    for (uint8_t character = 0; character < maxPwdLength; character++) {
+    /*for (uint8_t character = 0; character < maxPwdLength; character++) {
         if (character == 0) {
             password[character] = alphabet[character];
             testCounters[character] = 0;
         }
         password[character] = '\0';
         testCounters[character] = -1;
-    }
+    }*/
 
     // Start Timer
     struct timespec start_time, finish_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
-    for(uint64_t cycles = 0; cycles < 100000000; cycles++) {
+    for(uint64_t cycles = 0; cycles < 1000000000; cycles++) {
         testCounterFlags = generateNextPassword(testCounters,
                                                 sizeofAlphabet,
                                                 maxPwdLength,
@@ -58,6 +58,7 @@ void passwordGenTimer() {
                                               alphabet,
                                               pwdLength,
                                               password);
+        //printf("%s\n", password);
     }
     // Stop taking time
     clock_gettime(CLOCK_MONOTONIC, &finish_time);
