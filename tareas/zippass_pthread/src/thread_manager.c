@@ -8,13 +8,14 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <pthread.h>
+#include <semaphore.h>
 
 #include "data_structures.h"
 #include "queue_manager.h"
 #include "password_logic.h"
 
 
-void createPwdGeneratorThread(threadData_t* threadsData) {
+int createPwdGeneratorThread(threadData_t* threadsData) {
     uint8_t QueueId = 0;
     uint8_t filesUnlocked = 0;
     // Define dynamic memory usage
@@ -40,7 +41,9 @@ void createPwdGeneratorThread(threadData_t* threadsData) {
     uint8_t pwdLength = 1;
     int8_t** testCounterFlags = calloc(2, sizeof(int8_t*));
     while (filesUnlocked < threadsData->publicData->fileCount) {
-        enqueue(threadsData[QueueId].QueueData->Queue, password);
+        // Introduce the password into each thread's queue
+        enqueue(threadsData[QueueId].QueueData, password);
+
         // Generate a new password combination
         testCounterFlags = generateNextPassword(testCounters,
                                                 threadsData->publicData->sizeOfAlphabet,
@@ -62,7 +65,9 @@ void createPwdGeneratorThread(threadData_t* threadsData) {
 
         if (!strcmp(password, lastPassword)) {
             for (int queue = 0; queue < threadsData->publicData->threadCount - 2; queue++) {
-                enqueue(threadsData[queue].QueueData->Queue, "");
+                // If this is the last possible password, introduce an empty string as
+                // the stop character
+                enqueue(threadsData[queue].QueueData, "");
             }
             break;
         }
@@ -72,40 +77,60 @@ void createPwdGeneratorThread(threadData_t* threadsData) {
     free(lastPassword);
     free(testCounters);
     free(testCounterFlags);
+    return 0;
 }
 
-void createFileTesterThread(threadData_t threadData) {
+int createFileTesterThread(threadData_t threadData) {
     char* password = calloc(threadData.publicData->maxPwdLength, sizeof(char));
     bool exitCondition = false;
     while (threadData.publicData->filesUnlocked < threadData.publicData->fileCount) {
-        password = dequeue(threadData.QueueData->Queue);
+        // Grab value from that thread's queue
+        password = dequeue(threadData.QueueData);
+        if (!strcmp(password,"")) {
+            for (int file = 0; file < threadData.publicData->fileCount; file++) {
+                if (threadData.FilesData[file]->passwordFound == false) {
+                // Semaphore to make sure the files unlocked is not written at the same time
+                sem_wait(&threadData.publicData->semaphore);
+                threadData.publicData->filesUnlocked++;
+                threadData.FilesData[file]->password = password;
+                threadData.FilesData[file]->passwordFound = true;
+                sem_post(&threadData.publicData->semaphore);
+                }
+            }
+            pthread_exit(NULL);
+        }
         for (int file = 0; file < threadData.publicData->fileCount; file++) {
             exitCondition = decrypt_zip(threadData.publicData->fileList[file], password);
             if (exitCondition) {
-                // Need to add semaphore here
+                // Semaphore to make sure the files unlocked is not written at the same time
+                sem_wait(&threadData.publicData->semaphore);
                 threadData.publicData->filesUnlocked++;
-                threadData.FilesData[file].password = password;
-                threadData.FilesData[file].passwordFound = true;
+                sem_post(&threadData.publicData->semaphore);
+                threadData.FilesData[file]->password = password;
+                threadData.FilesData[file]->passwordFound = true;
             }
         }
         
     }
     free(password);
+    return 0;
 }
 
 void createThreads(uint8_t numOfThreads, threadData_t* threadsData) {
     pthread_t* threads = calloc(numOfThreads, sizeof(pthread_t));
+    // Create password generator thread
     int8_t error = pthread_create(&threads[0],
                                     NULL,
                                     createPwdGeneratorThread,
                                     &threadsData);
+    // Create password tester threads
     for (int counter = 1; counter < numOfThreads; counter++) {
         error = pthread_create(&threads[counter],
                                 NULL,
                                 createPwdGeneratorThread,
                                 &threadsData[counter]);
     }
-
+    // Wait for all threads to finish
     for (int counter = 0; counter < numOfThreads; counter++) {
         pthread_join(threads[counter], NULL);
     }
