@@ -12,11 +12,17 @@
 #include <stdbool.h>
 #include <pthread.h>
 
-char** createQueue(uint64_t QueueSize);
+#include "data_structures.h"
 
-char* dequeue(char** Queue);
+QueueData_t* createQueue(QueueData_t* QueueData, uint8_t QueueId);
 
-void enqueue(char** Queue, char* password);
+char* dequeue(QueueData_t* QueueData);
+
+void enqueue(QueueData_t* QueueData, char* password);
+
+int isQueueFull(QueueData_t* QueueData);
+
+int isQueueEmpty(QueueData_t* QueueData);
 
 
 #endif
