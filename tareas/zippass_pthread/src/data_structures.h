@@ -1,3 +1,8 @@
+
+#ifndef DATA_STRUCTURES_H
+#define DATA_STRUCTURES_H
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -40,9 +45,22 @@ typedef struct QueueData {
 
 /// @brief Struct that defines the data that is property of the file and/or
 ///        thread and may not be shared among them
-typedef struct threadData {
+typedef struct testerThreadData {
     uint8_t threadNumber;
-    QueueData_t** QueueData;
+    QueueData_t* QueueData;
     FilesData_t** FilesData;
     publicData_t* publicData;
-} threadData_t;
+} testerThreadData_t;
+
+typedef struct pwdGenData {
+    uint8_t threadNumber;
+    QueueData_t** QueueData;
+    publicData_t* publicData;
+} pwdGenData_t;
+
+typedef struct threadsData {
+    pwdGenData_t* pwdGenData;
+    testerThreadData_t** testerThreadData;
+} threadsData_t;
+
+#endif
