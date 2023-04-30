@@ -15,59 +15,65 @@
 #include "password_logic.h"
 
 
-int createPwdGeneratorThread(threadData_t* threadsData) {
+int createPwdGeneratorThread(pwdGenData_t* pwdGenData) {
     uint8_t QueueId = 0;
     uint8_t filesUnlocked = 0;
     // Define dynamic memory usage
-    int8_t* testCounters = calloc(threadsData->publicData->maxPwdLength, sizeof(int8_t));
-    char* lastPassword = calloc(threadsData->publicData->maxPwdLength, sizeof(char));
-    char* password = calloc(threadsData->publicData->maxPwdLength, sizeof(char));
-    for (uint8_t character = 0; character < threadsData->publicData->maxPwdLength; character++) {
-        lastPassword[character] = threadsData->publicData->alphabet[threadsData->publicData->sizeOfAlphabet - 1];
+    int8_t* testCounters = calloc(pwdGenData->publicData->maxPwdLength, sizeof(int8_t));
+    char* lastPassword = calloc(pwdGenData->publicData->maxPwdLength, sizeof(char));
+    char* password = calloc(pwdGenData->publicData->maxPwdLength, sizeof(char));
+    for (uint8_t character = 0; character < pwdGenData->publicData->maxPwdLength; character++) {
+        lastPassword[character] = pwdGenData->publicData->alphabet[pwdGenData->publicData->sizeOfAlphabet - 1];
     }
     bool exitCondition = false;
 
     // Init password array
-    for (uint8_t character = 0; character < threadsData->publicData->maxPwdLength; character++) {
+    for (uint8_t character = 0; character < pwdGenData->publicData->maxPwdLength; character++) {
         if (character == 0) {
-            password[character] = threadsData->publicData->alphabet[character];
+            password[character] = pwdGenData->publicData->alphabet[character];
             testCounters[character] = 0;
+        } else {
+            password[character] = '\0';
+            testCounters[character] = -1;
         }
-        password[character] = '\0';
-        testCounters[character] = -1;
     }
 
     //Generate all passwords and enqueue them into the respective thread
     uint8_t pwdLength = 1;
     int8_t** testCounterFlags = calloc(2, sizeof(int8_t*));
-    while (filesUnlocked < threadsData->publicData->fileCount) {
+    while (filesUnlocked < pwdGenData->publicData->fileCount) {
         // Introduce the password into each thread's queue
-        enqueue(threadsData[QueueId].QueueData, password);
+        printf("->Enqueueing %s in queue %" PRIu64 "\n", password, QueueId);
+        //printf("Size bef: %" PRIu64 "\n", pwdGenData.QueueData[QueueId]->QueueCurrentSize);
+        enqueue(pwdGenData->QueueData[QueueId], password);
 
         // Generate a new password combination
         testCounterFlags = generateNextPassword(testCounters,
-                                                threadsData->publicData->sizeOfAlphabet,
-                                                threadsData->publicData->maxPwdLength,
+                                                pwdGenData->publicData->sizeOfAlphabet,
+                                                pwdGenData->publicData->maxPwdLength,
                                                 pwdLength,
                                                 testCounterFlags);
         pwdLength = testCounterFlags[0];
 
         // Set password to the current combination
         password = translateCounterToPassword(testCounters,
-                                              threadsData->publicData->alphabet,
+                                              pwdGenData->publicData->alphabet,
                                               pwdLength,
                                               password);
-        if (QueueId == threadsData->publicData->threadCount - 2) {
+        if (QueueId == pwdGenData->publicData->threadCount - 2) {
             QueueId = 0;
         } else {
             QueueId++;
         }
 
         if (!strcmp(password, lastPassword)) {
-            for (int queue = 0; queue < threadsData->publicData->threadCount - 2; queue++) {
+            printf("LAST PASSWORD GENERATED\n");
+            enqueue(pwdGenData->QueueData[QueueId], password);
+            for (int queue = 0; queue < pwdGenData->publicData->threadCount - 1; queue++) {
                 // If this is the last possible password, introduce an empty string as
                 // the stop character
-                enqueue(threadsData[queue].QueueData, "");
+                printf("->Enqueueing %s in queue %" PRIu64 "\n", "-1", queue);
+                enqueue(pwdGenData->QueueData[queue], "-1");
             }
             break;
         }
@@ -80,59 +86,71 @@ int createPwdGeneratorThread(threadData_t* threadsData) {
     return 0;
 }
 
-int createFileTesterThread(threadData_t threadData) {
-    char* password = calloc(threadData.publicData->maxPwdLength, sizeof(char));
+int createFileTesterThread(testerThreadData_t* testerThreadData) {
+    char* password = calloc(testerThreadData->publicData->maxPwdLength, sizeof(char));
     bool exitCondition = false;
-    while (threadData.publicData->filesUnlocked < threadData.publicData->fileCount) {
-        // Grab value from that thread's queue
-        password = dequeue(threadData.QueueData);
-        if (!strcmp(password,"")) {
-            for (int file = 0; file < threadData.publicData->fileCount; file++) {
-                if (threadData.FilesData[file]->passwordFound == false) {
-                // Semaphore to make sure the files unlocked is not written at the same time
-                sem_wait(&threadData.publicData->semaphore);
-                threadData.publicData->filesUnlocked++;
-                threadData.FilesData[file]->password = password;
-                threadData.FilesData[file]->passwordFound = true;
-                sem_post(&threadData.publicData->semaphore);
+    while (testerThreadData->publicData->filesUnlocked < testerThreadData->publicData->fileCount) {
+        //printf("Password0: %s in %" PRIu8 " thread\n", testerThreadData->QueueData->Queue[testerThreadData->QueueData->front], testerThreadData->threadNumber);
+        if (!isQueueEmpty(testerThreadData->QueueData)) {
+            // Grab value from that thread's queue
+            password = dequeue(testerThreadData->QueueData);
+            //printf("Queue is NOT empty, trying password: %s\n", password);
+            if (!strcmp(password,"-1")) {
+                printf("EXIT PASSWORD DETECTED");
+                for (int file = 0; file < testerThreadData->publicData->fileCount; file++) {
+                    if (testerThreadData->FilesData[file]->passwordFound == false) {
+                        // Semaphore to make sure the files unlocked is not written at the same time
+                        sem_wait(&testerThreadData->publicData->semaphore);
+                        testerThreadData->publicData->filesUnlocked++;
+                        testerThreadData->FilesData[file]->password = password;
+                        testerThreadData->FilesData[file]->passwordFound = true;
+                        sem_post(&testerThreadData->publicData->semaphore);
+                    }
+                }
+                //free(password);
+                return 1;
+            }
+            for (int file = 0; file < testerThreadData->publicData->fileCount; file++) {
+                //printf("Trying %s on file %s\n", password,testerThreadData->publicData->fileList[file]);
+                printf("CurSize: %" PRIu64 "\n", testerThreadData->QueueData->QueueCurrentSize);
+                exitCondition = decrypt_zip(testerThreadData->publicData->fileList[file], password);
+                if (exitCondition) {
+                    // Semaphore to make sure the files unlocked is not written at the same time
+                    sem_wait(&testerThreadData->publicData->semaphore);
+                    testerThreadData->publicData->filesUnlocked++;
+                    sem_post(&testerThreadData->publicData->semaphore);
+                    testerThreadData->FilesData[file]->password = password;
+                    testerThreadData->FilesData[file]->passwordFound = true;
                 }
             }
-            pthread_exit(NULL);
-        }
-        for (int file = 0; file < threadData.publicData->fileCount; file++) {
-            exitCondition = decrypt_zip(threadData.publicData->fileList[file], password);
-            if (exitCondition) {
-                // Semaphore to make sure the files unlocked is not written at the same time
-                sem_wait(&threadData.publicData->semaphore);
-                threadData.publicData->filesUnlocked++;
-                sem_post(&threadData.publicData->semaphore);
-                threadData.FilesData[file]->password = password;
-                threadData.FilesData[file]->passwordFound = true;
-            }
+        } else {
+            printf("isEmpty? %i\n", isQueueEmpty(testerThreadData->QueueData));
+            printf("MaxSize: %" PRIu64 "\n", testerThreadData->QueueData->QueueMaxSize);
+            printf("CurSize: %" PRIu64 "\n", testerThreadData->QueueData->QueueCurrentSize);
+            sleep(10);
         }
         
     }
-    free(password);
     return 0;
 }
 
-void createThreads(uint8_t numOfThreads, threadData_t* threadsData) {
+void createThreads(uint8_t numOfThreads, pwdGenData_t* pwdGenData, testerThreadData_t** testerThreadData) {
     pthread_t* threads = calloc(numOfThreads, sizeof(pthread_t));
-    // Create password generator thread
+    // Create password generator thread (PROVEN)
     int8_t error = pthread_create(&threads[0],
                                     NULL,
                                     createPwdGeneratorThread,
-                                    &threadsData);
+                                    pwdGenData);
     // Create password tester threads
-    for (int counter = 1; counter < numOfThreads; counter++) {
+    for (int counter = 0; counter < numOfThreads - 1; counter++) {
         error = pthread_create(&threads[counter],
                                 NULL,
-                                createPwdGeneratorThread,
-                                &threadsData[counter]);
+                                createFileTesterThread,
+                                testerThreadData[counter]);
     }
     // Wait for all threads to finish
     for (int counter = 0; counter < numOfThreads; counter++) {
-        pthread_join(threads[counter], NULL);
+        pthread_join(threads[0], NULL);
     }
-
+    free(threads);
 }

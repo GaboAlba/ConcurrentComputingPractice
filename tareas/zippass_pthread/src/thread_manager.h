@@ -14,11 +14,11 @@
 
 #include "data_structures.h"
 
-int createcreatePwdGeneratorThread(threadData_t* threadsData);
+int createcreatePwdGeneratorThread(pwdGenData_t* pwdGenData);
 
-int createFileTesterThread(threadData_t threadData);
+int createFileTesterThread(testerThreadData_t* testerThreadData);
 
-void createThreads(uint8_t numOfThreads, threadData_t* threadsData);
+void createThreads(uint8_t numOfThreads, pwdGenData_t* pwdGenData, testerThreadData_t** testerThreadData);
 
 
 
