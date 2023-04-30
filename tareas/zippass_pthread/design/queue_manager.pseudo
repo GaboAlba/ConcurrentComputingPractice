@@ -5,10 +5,10 @@ procedure createQueue(QueueData, thread_number) {
 }
 
 
-procedure pushQueue(value,QueueId) {
+procedure enqueue(value,QueueId) {
 // This will push a new value into the start of the queue
 }
 
-procedure popQueue(QueueId) {
+procedure dequeue(QueueId) {
 // This will pop the last value in the queue
 }

@@ -1,4 +1,5 @@
 include ../../common/Makefile
 
 FLAG += -pthread
-LIBS = -lzip
+LIBS = -lzip \
+	   -lm
