@@ -2,6 +2,8 @@
 ///  @file
 ///  @brief Main source program
 
+/// @brief Constant that can be changed for debugging purposes. Set to 1 for
+///        running tests, set to 0 for running the decrypter.
 #define DEBUGCONST 0
 
 #include <stdio.h>
@@ -17,17 +19,14 @@
 #include "exec_time_test.h"
 #include "queue_manager_test.h"
 
-//**********************************************************************************************************************
+//*****************************************************************************
 ///    @brief Asks the user for the input and validates it. After this it calls
 ///           the subroutine to decipher the password. Also can be used for
 ///           testing purposes with the unit tests provided.
 ///    @param argc A counter of the amount of inputs provided from the stdin
 ///    @param argv An array of the inputs provided, in this case it corresponds
 ///                to the amount of threads that are going to be used
-///    @return An error code:
-///        @retval 0 for success
-///        @retval int for any error
-//**********************************************************************************************************************
+//*****************************************************************************
 void main(int argc, char* argv[]) {
   if (!DEBUGCONST) {
     uint8_t noOfThreads;
@@ -65,11 +64,10 @@ void main(int argc, char* argv[]) {
     }
   } else {
     // ENTER HERE THE TESTS YOU WANT TO RUN
-    //passwordGenTimer();
-    //decryptTesterTimerWrong();
-    //decryptTesterTimerRight();
-    //canFileBeOpenedMultipleTimes();
+    // passwordGenTimer();
+    // decryptTesterTimerWrong();
+    // decryptTesterTimerRight();
+    // canFileBeOpenedMultipleTimes();
     enqueueDequeueTesting();
-
   }
 }

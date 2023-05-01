@@ -1,3 +1,4 @@
+// Copyright [2023] Gabriel Alba Romero <gabriel.alba@ucr.ac.cr>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,15 +21,14 @@ void enqueueDequeueTesting() {
     uint8_t QueueId = 0;
     QueueData = createQueue(QueueData, QueueId);
     printf("2\n");
-    printf("%i\n",isQueueEmpty(QueueData));
+    printf("%i\n", isQueueEmpty(QueueData));
     char* password = calloc(5, sizeof(char));
     for (uint64_t num = 0; num < QueueData->QueueMaxSize; num++) {
         sprintf(password, "%d", num);
         enqueue(QueueData, password);
     }
-    for (uint64_t num = QueueData->QueueMaxSize -1; num >= 0; num--){
+    for (uint64_t num = QueueData->QueueMaxSize -1; num >= 0; num--) {
         password = dequeue(QueueData);
         printf("%s\n", password);
     }
-    
 }

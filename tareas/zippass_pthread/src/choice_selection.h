@@ -1,6 +1,4 @@
 // Copyright [2023] Gabriel Alba Romero <gabriel.alba@ucr.ac.cr>
-///  @file
-///  @brief Main source program
 
 #ifndef CHOICE_SELECTION_H
 #define CHOICE_SELECTION_H
@@ -26,7 +24,8 @@
 #include "data_structures.h"
 #include "thread_manager.h"
 
-void zippass_pthread(char** lines, uint8_t noOfThreads, uint8_t fileCount, uint8_t lineCount);
+void zippass_pthread(char** lines, uint8_t noOfThreads,
+                     uint8_t fileCount, uint8_t lineCount);
 
 void zippass_serial(char** lines, uint8_t fileCount, uint8_t lineCount);
 

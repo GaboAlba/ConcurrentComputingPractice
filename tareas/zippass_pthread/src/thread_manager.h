@@ -1,7 +1,7 @@
 // Copyright [2023] Gabriel Alba Romero <gabriel.alba@ucr.ac.cr>
 
 #ifndef THREAD_MANAGER_H
-#define THREAD_MANAGER
+#define THREAD_MANAGER_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +18,9 @@ int createcreatePwdGeneratorThread(pwdGenData_t* pwdGenData);
 
 int createFileTesterThread(testerThreadData_t* testerThreadData);
 
-void createThreads(uint8_t numOfThreads, pwdGenData_t* pwdGenData, testerThreadData_t** testerThreadData);
+void createThreads(uint8_t numOfThreads,
+                   pwdGenData_t* pwdGenData,
+                   testerThreadData_t** testerThreadData);
 
 
 

@@ -1,4 +1,4 @@
-
+// Copyright [2023] Gabriel Alba Romero <gabriel.alba@ucr.ac.cr>
 
 #ifndef QUEUE_MANAGER_H
 #define QUEUE_MANAGER_H

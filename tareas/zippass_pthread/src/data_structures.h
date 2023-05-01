@@ -1,7 +1,7 @@
+// Copyright [2023] Gabriel Alba Romero <gabriel.alba@ucr.ac.cr>
 
 #ifndef DATA_STRUCTURES_H
 #define DATA_STRUCTURES_H
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,12 +28,16 @@ typedef struct publicData {
     sem_t semaphore;
 } publicData_t;
 
+/// @brief Struct that defines the data that caracterizes each file inputted by
+//         the user
 typedef struct FilesData {
     char* filePath;
     char* password;
     bool passwordFound;
 } FilesData_t;
 
+/// @brief Struct that defines the data that characterizes the File Tester
+///        thread queues in which the generated passwords will be stored
 typedef struct QueueData {
     char** Queue;
     int64_t rear;
@@ -43,8 +47,9 @@ typedef struct QueueData {
     uint8_t QueueId;
 } QueueData_t;
 
-/// @brief Struct that defines the data that is property of the file and/or
-///        thread and may not be shared among them
+/// @brief Struct that defines the data that is property of or that can be
+///        accesed by the File Tester threads like their own queue, the files'
+///        data and the publicData
 typedef struct testerThreadData {
     uint8_t threadNumber;
     bool threadDone;
@@ -53,6 +58,8 @@ typedef struct testerThreadData {
     publicData_t* publicData;
 } testerThreadData_t;
 
+/// @brief Struct that defines the data that the Password Generator thread can
+///        access during it's runtime
 typedef struct pwdGenData {
     uint8_t threadNumber;
     QueueData_t** QueueData;

@@ -1,3 +1,8 @@
+// Copyright [2023] Gabriel Alba Romero <gabriel.alba@ucr.ac.cr>
+
+#ifndef EXEC_TIME_TEST_H
+#define EXEC_TIME_TEST_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -19,3 +24,5 @@ void decryptTesterTimerWrong();
 void decryptTesterTimerRight();
 
 void canFileBeOpenedMultipleTimes();
+
+#endif
