@@ -7,7 +7,7 @@ For information regarding the design of the system: [DesignREADME](design/README
 -----
 As part of the Parallel and Concurrent Computing class we have been provided with several zip files with encrypted text files inside which we need to read. 
 
-For this problem, a solution using a multi-threaded "brute force" algorithm must be accomplished. Apart from this, the algorithm should be efficient enough to run all medium test cases in an hour or less. 
+For this problem, a solution using a multi-threaded "brute force" algorithm must be accomplished. Apart from this, the algorithm should be efficient enough to run all test cases in an hour or less. 
 
 ## User Manual
 -------
