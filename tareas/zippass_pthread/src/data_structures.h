@@ -47,6 +47,7 @@ typedef struct QueueData {
 ///        thread and may not be shared among them
 typedef struct testerThreadData {
     uint8_t threadNumber;
+    bool threadDone;
     QueueData_t* QueueData;
     FilesData_t** FilesData;
     publicData_t* publicData;
@@ -58,9 +59,5 @@ typedef struct pwdGenData {
     publicData_t* publicData;
 } pwdGenData_t;
 
-typedef struct threadsData {
-    pwdGenData_t* pwdGenData;
-    testerThreadData_t** testerThreadData;
-} threadsData_t;
 
 #endif

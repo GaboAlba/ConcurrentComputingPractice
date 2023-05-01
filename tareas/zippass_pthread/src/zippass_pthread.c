@@ -4,7 +4,6 @@
 
 #define DEBUGCONST 0
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -18,21 +17,28 @@
 #include "exec_time_test.h"
 #include "queue_manager_test.h"
 
-
 //**********************************************************************************************************************
 ///    @brief Asks the user for the input and validates it. After this it calls
-///           the subroutine to decipher the password.
-///    @param void Receives no parameters
+///           the subroutine to decipher the password. Also can be used for
+///           testing purposes with the unit tests provided.
+///    @param argc A counter of the amount of inputs provided from the stdin
+///    @param argv An array of the inputs provided, in this case it corresponds
+///                to the amount of threads that are going to be used
 ///    @return An error code:
 ///        @retval 0 for success
 ///        @retval int for any error
 //**********************************************************************************************************************
-int main(void) {
+void main(int argc, char* argv[]) {
   if (!DEBUGCONST) {
-    uint8_t noOfThreads = 2;
+    uint8_t noOfThreads;
+    if (argv[1] != NULL) {
+      noOfThreads = strtoull(argv[1], NULL, 10);
+    } else {
+      noOfThreads = sysconf(_SC_NPROCESSORS_ONLN);
+    }
     const uint16_t kMaxCharacters = 999;
     char input[kMaxCharacters];
-    
+
     // Managing Input
     printf("Please enter required information (use ; when finished): \n");
     int8_t error = scanf("%[^;]s", &input);
@@ -57,9 +63,8 @@ int main(void) {
     } else {
       zippass_serial(lines, fileCount, lineCount);
     }
-    return 0;
   } else {
-    // ENTER HERE THE TESTS YOU WANT TO RUN 
+    // ENTER HERE THE TESTS YOU WANT TO RUN
     //passwordGenTimer();
     //decryptTesterTimerWrong();
     //decryptTesterTimerRight();
