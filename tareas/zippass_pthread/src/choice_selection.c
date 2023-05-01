@@ -33,7 +33,7 @@ void zippass_pthread(char** lines, uint8_t noOfThreads, uint8_t fileCount, uint8
     publicData->maxPwdLength = strtoull(lines[1], NULL, 10);
     publicData->fileList = calloc(fileCount, sizeof(char*));
     publicData->fileCount = fileCount;
-    publicData->threadCount = noOfThreads; // Need to change this for `main` args
+    publicData->threadCount = noOfThreads;
     publicData->sizeOfAlphabet = strlen(publicData->alphabet);
     publicData->filesUnlocked = 0;
     
@@ -53,9 +53,9 @@ void zippass_pthread(char** lines, uint8_t noOfThreads, uint8_t fileCount, uint8
     }
 
     // Initializing QueueData
-    QueueData_t** queueData = calloc(publicData->threadCount - 1, sizeof(QueueData_t));
+    QueueData_t** queueData = calloc(publicData->threadCount - 1, sizeof(QueueData_t*));
     uint64_t maxNumOfPasswords = pow(publicData->sizeOfAlphabet, publicData->maxPwdLength);
-    uint64_t maxQueueSize = maxNumOfPasswords/(publicData->threadCount - 1);
+    uint64_t maxQueueSize = maxNumOfPasswords * 2;
     for (uint8_t thread = 0; thread < noOfThreads - 1; thread++) {
       queueData[thread] = calloc(1, sizeof(QueueData_t));
       queueData[thread]->QueueMaxSize = maxQueueSize;
@@ -70,7 +70,7 @@ void zippass_pthread(char** lines, uint8_t noOfThreads, uint8_t fileCount, uint8
     pwdGenData->threadNumber = 0;
 
     // Initializing testerThreadData
-    testerThreadData_t** testerThreadsData = calloc(noOfThreads - 1, sizeof(testerThreadData_t));
+    testerThreadData_t** testerThreadsData = calloc(noOfThreads - 1, sizeof(testerThreadData_t*));
     for (uint8_t thread = 0; thread < noOfThreads - 1; thread++) {
       testerThreadsData[thread] = calloc(1, sizeof(testerThreadData_t));
       testerThreadsData[thread]->FilesData = filesData;
@@ -84,7 +84,7 @@ void zippass_pthread(char** lines, uint8_t noOfThreads, uint8_t fileCount, uint8
     for (int8_t spaces = 0; spaces < 5; spaces++) {
       printf("\n");
     }
-    printf("---Decrypting your password(s)---\n");
+    printf("---Decrypting your password(s) with %" PRIu8 " threads---\n", noOfThreads);
 
     // Start Timer
     struct timespec start_time, finish_time;
@@ -109,9 +109,9 @@ void zippass_pthread(char** lines, uint8_t noOfThreads, uint8_t fileCount, uint8
     // Free up memory
     free(publicData);
     free(lines);
+    free(pwdGenData);
     free(filesData);
     free(queueData);
-    free(pwdGenData);
     free(testerThreadsData);
 }
 
