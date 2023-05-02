@@ -48,7 +48,6 @@ int createPwdGeneratorThread(pwdGenData_t* pwdGenData) {
                                                       publicData->
                                                       sizeOfAlphabet - 1];
   }
-  bool exitCondition = false;
 
   // Init password array
   for (uint8_t character = 0; character < pwdGenData->publicData->maxPwdLength;
@@ -158,9 +157,9 @@ int createFileTesterThread(testerThreadData_t* testerThreadData) {
             // same time
             sem_wait(&testerThreadData->publicData->semaphore);
             testerThreadData->publicData->filesUnlocked++;
-            sem_post(&testerThreadData->publicData->semaphore);
             testerThreadData->FilesData[file]->password = password;
             testerThreadData->FilesData[file]->passwordFound = true;
+            sem_post(&testerThreadData->publicData->semaphore);
           }
         }
       }
@@ -188,17 +187,25 @@ void createThreads(uint8_t numOfThreads,
                    testerThreadData_t** testerThreadData) {
     // Declar and init threads
     pthread_t* threads = calloc(numOfThreads, sizeof(pthread_t));
-    // Create password generator thread (PROVEN)
+    // Create password generator thread
     int8_t error = pthread_create(&threads[0],
                                     NULL,
                                     createPwdGeneratorThread,
                                     pwdGenData);
+    if (error == EXIT_SUCCESS) {
+    } else {
+      fprintf(stderr, "ERROR: The Password Generator thread was not created");
+    }
     // Create password tester threads
     for (int counter = 1; counter < numOfThreads; counter++) {
-        error = pthread_create(&threads[counter],
-                                NULL,
-                                createFileTesterThread,
-                                testerThreadData[counter - 1]);
+      error = pthread_create(&threads[counter],
+                              NULL,
+                              createFileTesterThread,
+                              testerThreadData[counter - 1]);
+      if (error == EXIT_SUCCESS) {
+      } else {
+        fprintf(stderr, "ERROR: A File Tester thread was not created");
+      }
     }
     // Wait for all threads to finish
     for (int counter = 0; counter < numOfThreads; counter++) {

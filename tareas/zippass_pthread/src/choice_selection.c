@@ -48,8 +48,8 @@ void zippass_pthread(char** lines, uint8_t noOfThreads,
 
   // Initializing semaphore
   sem_t threadsSemaphore;
+  sem_init(&threadsSemaphore, 0, 1);
   publicData->semaphore = threadsSemaphore;
-  sem_init(&publicData->semaphore, 0, 1);
 
   // Initializing filesData
   FilesData_t** filesData = calloc(publicData->fileCount,

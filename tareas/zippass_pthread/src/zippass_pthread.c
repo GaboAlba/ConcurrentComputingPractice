@@ -27,7 +27,7 @@
 ///    @param argv An array of the inputs provided, in this case it corresponds
 ///                to the amount of threads that are going to be used
 //*****************************************************************************
-void main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
   if (!DEBUGCONST) {
     uint8_t noOfThreads;
     if (argv[1] != NULL) {
