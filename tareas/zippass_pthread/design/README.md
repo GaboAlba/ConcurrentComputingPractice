@@ -23,11 +23,10 @@ In the case of the data structures they are divided in the following way:
 4. testerThreadData: Data that is owned exclusively by the testerThreads like threadNumber, it's queue.
 5. pwdGenData: Data that is owned exclusively by the passwordGenerator like all queues and thread number.
 
-## NEED TO CHANGE
 ![Overview of The System](UML_overview.drawio.svg)
 
 ------------
-## Flowchart of the design
+## Flow of the design
 To understand better how the system works, a flowchart with sample data is provided. It details the whole decision process and data flow of the system. It can be summarized in the following way:
 1. Data is inputted into our `main()` function
 2. This data is validated to be composed of only ASCII characters. If not, go back to main
@@ -42,8 +41,9 @@ To understand better how the system works, a flowchart with sample data is provi
     * ***The File Tester Threads*** will dequeue a value from their own queue and test it in all files serially, this way testing a lot of passwords at the same time. Once a password is found for a file, a boolean flag is changed to `true` ,indicating that the password was deciphered for that file, and the password will be logged inside the file data structure. Once all files have been deciphered or all passwords have been tested it will return a success value.
 10. Once all iterations are done this will trigger the print of the file paths and their passwords, in the same order they were inputted.
 
-## NEED TO CHANGE
-![Detailed Flow Chart](UML_flow.drawio.svg)
-
 --------------------------
-## Memory Diagram (NEED TO ADD)
+## Memory Diagram
+
+In order to understand the program better the memory diagram was created for this system
+
+![Memory Trace](MemRastreo.drawio.svg)
