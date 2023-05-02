@@ -16,6 +16,7 @@ In the case of the subroutine modules they are divided in the following way:
 In the case of the data structures they are divided in the following way: 
 1. publicData: Data that is shared among all the files that were inputted
 2. privateData: Data that is unique to a single file,  like it's name and password. It also contains the publicData as part of itself
+
 ![Overview of The System](UML_overview.drawio.svg)
 
 ------------
@@ -30,4 +31,11 @@ To understand better how the system works, a flowchart with sample data is provi
 7. The first file will be inputted to the deciphering function. 
 8. This function will generate and try new passwords until the password is found or no more passwords can be tested.
 9. If there are more files it will repeat from Step 7, if not the system will end it's processing 
+
 ![Detailed Flow Chart](UML_flow.drawio.svg)
+
+
+------------------
+## Rastreo de memoria
+
+![Rastreo](MemRastreoHW1.drawio.svg)

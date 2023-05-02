@@ -1,7 +1,7 @@
+.vscode/
 bin/
 build/
 doc/
 *.d
 *.o
 valgrind-out.txt
-
