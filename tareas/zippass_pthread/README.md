@@ -20,7 +20,7 @@ In order to run this program a couple of steps must be followed first.
     * For Linux: `Open in Terminal`
     * For VSCode: `Open in Integrated Terminal`
 2. Input `make` into the terminal and press Enter, make sure that there are no errors highlighted in the output. Warnings are OK. 
-3. If no errors are present, input `bin/zippass_serial` into the terminal and press Enter.
+3. If no errors are present, input `bin/zippass_serial <number of threads>`, where the number of threads is a positive integer and is optional (if it's not present it will default to the amount of CPUs your system has), into the terminal and press Enter.
 4. Now you'll see a prompt stating `Please enter required information (use ; when finished): `. In there you will provide the following information for your files: 
     * `Alphabet`: All possible characters that the password can contain, e.g., `abcdef1234@#%`
     * `Length`: The maximum length of the password, e.g., `5` 

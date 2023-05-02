@@ -1,4 +1,4 @@
-# ZIPPass_Serial Design
+# ZIPPass_Pthread Design
 
 For more information about the system: [MainReadme](../README.md)
 
@@ -44,6 +44,6 @@ To understand better how the system works, a flowchart with sample data is provi
 --------------------------
 ## Memory Diagram
 
-In order to understand the program better the memory diagram was created for this system
+In order to understand the program better the memory diagram was created for this system for a test case of 3 threads.
 
 ![Memory Trace](MemRastreo.drawio.svg)
