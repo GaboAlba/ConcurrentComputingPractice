@@ -45,6 +45,7 @@ void zippass_pthread(char** lines, uint8_t noOfThreads,
   publicData->threadCount = noOfThreads;
   publicData->sizeOfAlphabet = strlen(publicData->alphabet);
   publicData->filesUnlocked = 0;
+  publicData->testerThreadsDone = 0;
 
   // Initializing semaphore
   sem_t threadsSemaphore;

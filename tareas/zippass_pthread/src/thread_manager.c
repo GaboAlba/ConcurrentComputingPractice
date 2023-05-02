@@ -131,20 +131,26 @@ int createFileTesterThread(testerThreadData_t* testerThreadData) {
       // Grab value from that thread's queue
       password = dequeue(testerThreadData->QueueData);
       if (!strcmp(password, "")) {
-        for (int file = 0; file < testerThreadData->publicData->fileCount;
+        sem_wait(&testerThreadData->publicData->semaphore);
+        testerThreadData->publicData->testerThreadsDone++;
+        testerThreadData->threadDone = true;
+        sem_post(&testerThreadData->publicData->semaphore);
+        if (testerThreadData->publicData->testerThreadsDone ==
+            testerThreadData->publicData->threadCount) {
+          for (int file = 0; file < testerThreadData->publicData->fileCount;
                                                                       file++) {
-          if (testerThreadData->FilesData[file]->passwordFound == false) {
-            // Semaphore to make sure the files unlocked is not written at the
-            // same time
-            sem_wait(&testerThreadData->publicData->semaphore);
-            testerThreadData->publicData->filesUnlocked++;
-            testerThreadData->FilesData[file]->password = password;
-            testerThreadData->FilesData[file]->passwordFound = true;
-            testerThreadData->threadDone = true;
-            sem_post(&testerThreadData->publicData->semaphore);
+            if (testerThreadData->FilesData[file]->passwordFound == false) {
+              // Semaphore to make sure the files unlocked is not written at
+              // the same time
+              sem_wait(&testerThreadData->publicData->semaphore);
+              testerThreadData->publicData->filesUnlocked++;
+              testerThreadData->FilesData[file]->password = password;
+              testerThreadData->FilesData[file]->passwordFound = true;
+              sem_post(&testerThreadData->publicData->semaphore);
+            }
           }
+          return 1;
         }
-        return 1;
       }
       for (int file = 0; file < testerThreadData->publicData->fileCount;
                                                                       file++) {

@@ -25,6 +25,7 @@ typedef struct publicData {
     uint8_t threadCount;
     uint8_t fileCount;
     uint8_t filesUnlocked;
+    uint8_t testerThreadsDone;
     sem_t semaphore;
 } publicData_t;
 
