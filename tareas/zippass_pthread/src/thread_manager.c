@@ -125,16 +125,19 @@ int createFileTesterThread(testerThreadData_t* testerThreadData) {
                           sizeof(char));
   bool exitCondition = false;
   while (testerThreadData->publicData->filesUnlocked <
-          testerThreadData->publicData->fileCount &&
-          testerThreadData->threadDone == false) {
+          testerThreadData->publicData->fileCount || testerThreadData->threadDone) {
     if (!isQueueEmpty(testerThreadData->QueueData)) {
       // Grab value from that thread's queue
       password = dequeue(testerThreadData->QueueData);
-      if (!strcmp(password, "")) {
+      if (!strcmp(password, "") || testerThreadData->QueueData->front ==
+                                    testerThreadData->QueueData->rear) {
+        // Semaphore to write to threadsDone safely
         sem_wait(&testerThreadData->publicData->semaphore);
         testerThreadData->publicData->testerThreadsDone++;
         testerThreadData->threadDone = true;
         sem_post(&testerThreadData->publicData->semaphore);
+        // Only if all passwords have been tested assign no password to the 
+        // remaining files
         if (testerThreadData->publicData->testerThreadsDone ==
             testerThreadData->publicData->threadCount) {
           for (int file = 0; file < testerThreadData->publicData->fileCount;
@@ -149,8 +152,8 @@ int createFileTesterThread(testerThreadData_t* testerThreadData) {
               sem_post(&testerThreadData->publicData->semaphore);
             }
           }
-          return 1;
         }
+        return 1;
       }
       for (int file = 0; file < testerThreadData->publicData->fileCount;
                                                                       file++) {
