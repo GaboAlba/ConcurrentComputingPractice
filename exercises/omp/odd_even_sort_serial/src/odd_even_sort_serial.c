@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -11,7 +10,6 @@
 double random_double(double low, double high) {
     double randDouble;
     randDouble = (double) rand()/ ((double) RAND_MAX + 1);
-    printf("%f\n", low + randDouble * (high - low));
     return (low + randDouble * (high - low));
 }
 
@@ -22,24 +20,22 @@ void swap(double* numOne, double* numTwo) {
 }
 
 double* serial_odd_even_sort(size_t n, double arr[n]) {
-    printf("Entered sort");
     for (int phase = 0; phase < n; ++phase) {
         if (phase % 2 == 0) {
             for (int i = 1; i < n; i += 2) {
                 if (arr[i - 1] > arr[i]) {
-                    printf("Swapped Even");
                     swap(&arr[i - 1], &arr[i]);
                 }
             }
         } else {
             for (int i = 1; i < n - 1; i += 2) {
                 if (arr[i] > arr[i + 1]) {
-                    printf("Swapped Odd");
                     swap(&arr[i], &arr[i + 1]);
                 }
             }
         }
     }
+    return arr;
 }
 
 void print_array(size_t n, double* arr) {
@@ -65,4 +61,5 @@ int main(int argc, char* argv[]) {
 
     free(arr);
 
+    return 0;
 }
