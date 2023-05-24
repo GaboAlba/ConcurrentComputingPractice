@@ -51,13 +51,13 @@ int main(int argc, char* argv[]) {
     size_t n = strtoull(argv[1], NULL, 10);
     double* arr = calloc(n, sizeof(double));
     for (size_t index = 0; index < n; index++) {
-        arr[index] = random_double(0.0, 100.0);
+        arr[index] = random_double(0.0, RAND_MAX);
     }
-    printf("Unordered: ");
-    print_array(n, arr);
+    //printf("Unordered: ");
+    //print_array(n, arr);
     arr = serial_odd_even_sort(n, arr);
-    printf("Ordered: ");
-    print_array(n, arr);
+    //printf("Ordered: ");
+    //print_array(n, arr);
 
     free(arr);
 
