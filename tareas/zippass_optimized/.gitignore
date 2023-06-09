@@ -4,4 +4,6 @@ build/
 doc/
 *.d
 *.o
-callgrind-out.*
+valgrind-out.txt
+callgrind.out.*
+
