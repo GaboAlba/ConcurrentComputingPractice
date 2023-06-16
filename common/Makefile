@@ -237,6 +237,9 @@ endif
 memcheck: $(EXEFILE)
 	valgrind --tool=memcheck $(EXEARGS)
 
+memcheck_full: $(EXEFILE)
+	valgrind --tool=memcheck --leak-check=full $(EXEARGS)
+
 helgrind: $(EXEFILE)
 	valgrind --quiet --tool=helgrind $(EXEARGS)
 
