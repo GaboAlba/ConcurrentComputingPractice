@@ -16,9 +16,6 @@
 #include "choice_selection.h"
 #include "input_reader.h"
 #include "password_logic.h"
-#include "zip_operations_test.h"
-#include "exec_time_test.h"
-#include "queue_manager_test.h"
 #include "data_structures.h"
 #include "thread_manager.h"
 
