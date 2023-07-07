@@ -1,0 +1,40 @@
+procedure createPwdGeneratorThread(publicData) {
+    password = publicData.alphabet[0]
+    QueueId = 0
+    while(!allFilesUnlocked || !allPasswordsGenerated) {
+        pushIntoQueue(password, QueueId)
+        password = generateNewPassword(password)
+        QueueId++
+        if QueueId == publicData.alphabetSize {
+            QueueId = 0
+        }
+    }
+    exit_thread()
+}
+
+// We will create n parallel threads that will test passwords at the same time over the files
+procedure createFileTesterThread(publicData, privateData[thread], FilesData) {
+    while (!publicData.allFilesUnlocked) {
+        currentPassword = PopQueue(privateData[thread].Queue)
+        for file in files {
+            if not FilesData[file].fileDecrypted {
+                error = decrypt_zip(Files[file], currentPassword)
+                if error == 0 {
+                    FilesData[file].fileDecrypted = TRUE;
+                }
+            }
+        }
+        passwordQueue[len - 1].pop()
+    }
+    free(passwordQueue)
+    exit_thread()
+}
+
+
+procedure createThreads(numOfThreads) {
+    thread_create(createPwdGeneratorThread());
+    for numOfThreads - 1 {
+        thread_create(createFileTesterThread);
+    }
+}
+
