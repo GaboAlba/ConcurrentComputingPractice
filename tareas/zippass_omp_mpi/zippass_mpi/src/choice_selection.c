@@ -310,14 +310,10 @@ void zippass_serial(char** lines, uint8_t fileCount, uint8_t lineCount) {
 
 void zippass_mpi(char* alphabet, char* maxPwdLength, char* file,
                 uint8_t noOfThreads, uint8_t fileCount, uint8_t lineCount) {
-  
   char** lines = calloc(4, sizeof(char*));
-  //printf("Alphabet received: %s\n", alphabet);
   lines[0] = alphabet;
-  //printf("MaxPwdLength received: %s\n", maxPwdLength);
   lines[1] = maxPwdLength;
   lines[2] = "";
-  //printf("File received: %s\n", file);
   lines[3] = file;
 
   // Defining and initializing PublicData
@@ -380,28 +376,8 @@ void zippass_mpi(char* alphabet, char* maxPwdLength, char* file,
     testerThreadsData[thread]->threadNumber = thread + 1;
   }
 
-
-  // Print whitespace for better visualization
-  // for (int8_t spaces = 0; spaces < 5; spaces++) {
-  //   printf("\n");
-  // }
-
-  // Start Timer
-  struct timespec start_time, finish_time;
-  clock_gettime(CLOCK_MONOTONIC, &start_time);
-
   // Decipher passwords
   createThreads_OMP(noOfThreads, pwdGenData, testerThreadsData);
-
-  // Stop taking time
-  clock_gettime(CLOCK_MONOTONIC, &finish_time);
-  double elapsed_time = finish_time.tv_sec - start_time.tv_sec +
-    (finish_time.tv_nsec - start_time.tv_nsec) * 1e-9;
-
-  // Print files and passwords
-  // for (int file = 0; file < fileCount; file++) {
-  //   printf("%s %s\n", filesData[file]->filePath, filesData[file]->password);
-  // }
 
     // Initialize MPI
   int process_number = -1;
@@ -415,21 +391,15 @@ void zippass_mpi(char* alphabet, char* maxPwdLength, char* file,
   MPI_Get_processor_name(process_hostname, &hostname_length);
 
   file = filesData[0]->filePath;
-  //printf("Sending file %s \n", file);
   if (MPI_Send(file, strlen(file) + 1, MPI_CHAR, 0,
                             0, MPI_COMM_WORLD) != MPI_SUCCESS) {
     fprintf(stderr, "Could not send password to process %i\n", 0);
   }
   char* password = filesData[0]->password;
-  //printf("Sending password %s ::::::", password);
   if (MPI_Send(password, strlen(password) + 1, MPI_CHAR,
                                          0, 0, MPI_COMM_WORLD) != MPI_SUCCESS) {
     fprintf(stderr, "Could not send password to process %i\n", 0);
   }
-  //printf("Process %i Sent back password and file\n", process_number);
-
-  // printf("---Password(s) decrypted---\n");
-  // printf("Time: %.9lfs\n", elapsed_time);
 
   // Free up memory
   free(publicData);

@@ -323,10 +323,10 @@ void createThreads_OMP(uint8_t numOfThreads,
     // Create password tester threads
     #pragma omp parallel num_threads(numOfThreads) \
     default(none) shared(numOfThreads, testerThreadData)
-    {
+    { // NOLINT
       #pragma omp for
       for (int counter = 1; counter < numOfThreads; counter++) {
         createFileTesterThread_OMP(testerThreadData[counter - 1]);
       }
-    }    
+    }
 }
