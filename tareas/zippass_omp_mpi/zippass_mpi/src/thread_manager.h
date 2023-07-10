@@ -22,6 +22,9 @@ void createThreads(uint8_t numOfThreads,
                    pwdGenData_t* pwdGenData,
                    testerThreadData_t** testerThreadData);
 
+void createThreads_OMP(uint8_t numOfThreads,
+                   pwdGenData_t* pwdGenData,
+                   testerThreadData_t** testerThreadData);
 
 
 #endif

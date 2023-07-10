@@ -32,4 +32,7 @@ void zippass_pthread(char** lines, uint8_t noOfThreads,
 
 void zippass_serial(char** lines, uint8_t fileCount, uint8_t lineCount);
 
+void zippass_mpi(char* alphabet, char* maxPwdLength, char* file,
+                uint8_t noOfThreads, uint8_t fileCount, uint8_t lineCount);
+
 #endif

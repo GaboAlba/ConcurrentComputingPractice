@@ -1,6 +1,6 @@
 # ZIPPass_Pthread Design
 
-For more information about the system: [MainReadme](../README.md)
+For more information about the system: [MainReadme](../../README.md)
 
 ## Overview of the system
 In the case of the design of this system, the approach detailed in the UML chart was chosen thinking in both scalability and maintainibility. The system is divided in the following way: 
@@ -58,62 +58,25 @@ As part of the testing, the time taken by both the serial algorithm and the para
 
 As can be seen past 8 cores it's were the algorithm starts to become less efficient very fast. A deeper testing must be done to determine the exact point where this algorithm start to bottleneck. Given the results, we will ignore the case were the algorithm takes less than a second and will be treated as a different problem altogether. The speedup seems to be assymptotic to around 8 or 9, so the top efficiency is going to be around that amount of threads. Here a graph is presented showing the results of the comparison between threads and speedup and efficiency. After that, the tables with the detailed results is presented.
 
+**There was an issue when testing in the Poas Cluster. When the jobs were sent to the queue a job was running, and at the time of writing this report the run time of that job is more than 18 hours. Given this condition, the MPI cases were not able to be tested in a distributed environment. This resuts reflect the runs performed in the same machine as the other tests**
+
+### Job stuck in the cluster queue
+![Stuck](StuckJob.png)
+
 ### Summary of the results
-
-![Comparison](Comparison.png)
-
-### Results with 24 threads
-|Test Case|~Serial(s)|~Parallel 12 threads(s)|Speedup|Efficiency|
-|---------|----------|-----------------------|-------|----------|
-| **000** |   72.9   |          10.2         |  7.15 |   0.30   |
-| **001** |   56.5   |           8.2         |  6.89 |   0.29   |
-| **002** |  101.2   |          14.6         |  6.93 |   0.29   |
-| **003** |  131.4   |          19.4         |  6.77 |   0.28   |
-| **004** |   0.43   |          0.66         |  0.65 |   0.03   |
-| **005** |  173.8   |          17.7         |  9.82 |   0.41   |
-| **006** | 1171.4   |         159.0         |  7.36 |   0.31   |
-| **007** | 5530.8   |         810.0         |  6.83 |   0.38   |
-|         |          |        **AVG**        |**7.39**|**0.32** |
 
 
 
 ### Results with 12 threads
-|Test Case|~Serial(s)|~Parallel 12 threads(s)|Speedup|Efficiency|
-|---------|----------|-----------------------|-------|----------|
-| **000** |   72.9   |          10.5         |  6.94 |   0.58   |
-| **001** |   56.5   |           8.2         |  6.89 |   0.57   |
-| **002** |  101.2   |          14.8         |  6.83 |   0.56   |
-| **003** |  131.4   |          21.0         |  6.25 |   0.52   |
-| **004** |   0.43   |          0.68         |  0.63 |   0.05   |
-| **005** |  173.8   |          27.9         |  6.22 |   0.52   |
-| **006** | 1171.4   |         159.5         |  7.34 |   0.61   |
-| **007** | 5530.8   |         849.3         |  6.51 |   0.54   |
-|         |          |        **AVG**        |**6.71**|**0.48** |
+|Test Case|~Serial(s)|~Parallel 12 threads(s) Pthreads|~Parallel 12 threads(s) OMP|~Parallel 12 threads(s) MPI-OMP|Speedup Pthreads|Speedup OMP|Speedup MPI|Efficiency Pthreads|Efficiency OMP|Efficiency MPI|
+|---------|----------|--------------------------------|---------------------------|-------------------------------|----------------|-----------|-----------|-------------------|--------------|--------------|
+| **000** |   72.9   |          10.5                  |            11.46          |           20.54               |     6.94       |    6.36   |   3.55    |   0.58            |    0.53      |    0.30      |
+| **001** |   56.5   |           8.2                  |            8.97           |           17.70               |     6.89       |    6.30   |   3.20    |   0.57            |    0.53      |    0.27      |
+| **002** |  101.2   |          14.8                  |            15.81          |           23.26               |     6.83       |    6.40   |   4.35    |   0.56            |    0.57      |    0.36      |
+| **003** |  131.4   |          21.0                  |            20.77          |           25.98               |     6.25       |    6.33   |   5.05    |   0.52            |    0.53      |    0.42      |
+| **004** |   0.43   |          0.68                  |            0.99           |           1.41                |     0.63       |    0.43   |   0.30    |   0.05            |    0.04      |    0.02      |
+| **005** |  173.8   |          27.9                  |            27.3           |           46.77               |     6.22       |    6.37   |   3.72    |   0.52            |    0.53      |    0.31      |
+| **006** | 1171.4   |         159.5                  |            174.21         |           359.13              |     7.34       |    6.72   |   3.26    |   0.61            |    0.56      |    0.27      |
+| **007** | 5530.8   |         849.3                  |            851.93         |           1766.51             |     6.51       |    6.49   |   3.13    |   0.54            |    0.54      |    0.26      |
+|         |          |                                |                           |            **AVG**            |   **6.71**     |  **6.42** | **3.75**  | **0.56**          |  **0.54**    |  **0.31**    |
 
-
-### Results with 8 threads
-|Test Case|~Serial(s)|~Parallel 8 threads(s)|Speedup|Efficiency|
-|---------|----------|----------------------|-------|----------|
-| **000** |   72.9   |          11.6        |  6.28 |   0.79   |
-| **001** |   56.5   |           9.5        |  5.95 |   0.74   |
-| **002** |  101.2   |          17.0        |  5.95 |   0.74   |
-| **003** |  131.4   |          22.4        |  5.87 |   0.73   |
-| **004** |   0.43   |          0.61        |  0.70 |   0.09   |
-| **005** |  173.8   |          30.1        |  5.77 |   0.72   |
-| **006** | 1171.4   |         183.6        |  6.38 |   0.80   |
-| **007** | 5530.8   |         933.0        |  5.93 |   0.74   |
-|         |          |        **AVG**       |**6.01**|**0.75** |
-
-
-### Results with 4 threads
-|Test Case|~Serial(s)|~Parallel 4 threads(s)|Speedup|Efficiency|
-|---------|----------|----------------------|-------|----------|
-| **000** |   72.9   |          24.3        |  3.00 |   0.75   |
-| **001** |   56.5   |          20.2        |  2.80 |   0.70   |
-| **002** |  101.2   |          34.8        |  2.91 |   0.73   |
-| **003** |  131.4   |          46.0        |  2.86 |   0.72   |
-| **004** |   0.43   |          0.61        |  0.70 |   0.18   |
-| **005** |  173.8   |          61.6        |  2.82 |   0.71   |
-| **006** | 1171.4   |         362.3        |  3.23 |   0.81   |
-| **007** | 5530.8   |        1943.4        |  2.85 |   0.71   |
-|         |          |        **AVG**       |**2.92**|**0.73** |

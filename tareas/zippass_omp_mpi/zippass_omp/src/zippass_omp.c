@@ -12,6 +12,7 @@
 #include <inttypes.h>
 #include <string.h>
 #include <ctype.h>
+#include <mpi.h>
 
 #include "choice_selection.h"
 #include "input_reader.h"
@@ -28,20 +29,21 @@
 ///                to the amount of threads that are going to be used
 //*****************************************************************************
 int main(int argc, char* argv[]) {
+  // Define variables
+  uint8_t noOfThreads;
+  uint8_t lineCount;
+  uint8_t fileCount;
+  struct timespec start_time, finish_time;
+  char** lines;
+  char* parallelForm = calloc(8, sizeof(char));
+  int8_t error;
+
   if (!DEBUGCONST) {
-    char* parallelForm = calloc(8, sizeof(char));
-    uint8_t noOfThreads;
     if (argv[1] != NULL && argv[2] != NULL) {
-      parallelForm = argv[1];
+      strcpy(parallelForm, argv[1]);
       noOfThreads = strtoull(argv[2], NULL, 10);
-    } else if (validateLength(argv[1]) && argv[2] == NULL) {
-      parallelForm = argv[1];
-      noOfThreads = sysconf(_SC_NPROCESSORS_ONLN);
-    } else if (!validateLength(argv[1]) && argv[2] == NULL) {
-      parallelForm = "pthreads";
-      noOfThreads = argv[1];
     } else {
-      parallelForm = "pthreads";
+      strcpy(parallelForm, "omp");
       noOfThreads = sysconf(_SC_NPROCESSORS_ONLN);
     }
 
@@ -50,7 +52,7 @@ int main(int argc, char* argv[]) {
 
     // Managing Input
     printf("Please enter required information (use ; when finished): \n");
-    int8_t error = scanf("%[^;]s", &input);
+    error = scanf("%[^;]s", &input);
     if (error > 0) {
     } else {
       fprintf(stderr, "ERROR: Could not read input\n");
@@ -60,33 +62,34 @@ int main(int argc, char* argv[]) {
     if (error) {
       return error;
     }
-    uint8_t lineCount = countChar(input, '\n');
-    uint8_t fileCount = lineCount - 3;
-    char** lines = lineator(input);
+    lineCount = countChar(input, '\n');
+    fileCount = lineCount - 3;
+    lines = lineator(input);
     error = validateInputFormat(lines, lineCount);
     if (error) {
+      printf("ERROR: Invalid Format");
       return error;
     }
     if (noOfThreads > 1) {
-      if (!strcmp(parallelForm, "pthread")) {
+      if (!strcmp(parallelForm, "pthreads")) {
         printf("PTHREADS Selected\n");
         zippass_pthread(lines, noOfThreads, fileCount, lineCount);
       } else if (!strcmp(parallelForm, "omp")) {
         printf("OMP Selected\n");
         zippass_omp(lines, noOfThreads, fileCount, lineCount);
       } else {
-        fprintf(stderr, "Enter a valid parallel mode\n");
-      }
+      } 
     } else {
+      printf("Running in single threaded mode");
       zippass_serial(lines, fileCount, lineCount);
     }
-    free(parallelForm);
   } else {
-    // ENTER HERE THE TESTS YOU WANT TO RUN
-    // passwordGenTimer();
-    // decryptTesterTimerWrong();
-    // decryptTesterTimerRight();
-    // canFileBeOpenedMultipleTimes();
-    enqueueDequeueTesting();
-  }
+        // ENTER HERE THE TESTS YOU WANT TO RUN
+        // passwordGenTimer();
+        // decryptTesterTimerWrong();
+        // decryptTesterTimerRight();
+        // canFileBeOpenedMultipleTimes();
+        enqueueDequeueTesting();
+  }  
+  free(parallelForm);
 }

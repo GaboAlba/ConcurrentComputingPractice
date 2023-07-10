@@ -273,19 +273,16 @@ int validateInputFormat(char** lines, uint8_t lineCount) {
   if (error == EXIT_FAILURE) {
     formatValid = 1;
   }
-
   // Validate Length value
   error = validateLength(lines[1]);
   if (error == EXIT_FAILURE) {
     formatValid = 1;
   }
-
   // Validate the empty line
   error = validateEmptyLine(lines[2]);
   if (error == EXIT_FAILURE) {
     formatValid = 1;
   }
-
   // validate file path format is correct
   for (uint8_t file = 3; file < lineCount; file++) {
     error = validateFileFormat(lines[file]);

@@ -1,0 +1,18 @@
+procedure decrypt_zip(file_path, password) {
+    define strToCompare = "CI0117-23a"
+    // Pre-checks
+    try open_zip(file)
+    try read_metadata(file)
+     
+    contents = open_encrypted_file(file, password);
+
+    if strToCompare == contents {
+        close(file)
+        free(contents)
+        return 1
+    } else {
+        close(file)
+        free(contents)
+        return 0
+    }
+}
